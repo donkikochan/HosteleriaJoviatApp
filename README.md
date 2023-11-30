@@ -6,3 +6,5 @@ It will have a main activity in which you can choose the view between two option
 
 ## Link to App description document
 https://docs.google.com/document/d/1pRi4GR54HxW1sB94JfRyqFRk6am8wT06p-LWTHXffeI/edit?usp=sharing
+## Trello link
+https://trello.com/b/vGv0cOIe/hosteleria-joviat-app
