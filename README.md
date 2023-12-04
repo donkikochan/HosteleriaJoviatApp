@@ -8,3 +8,5 @@ It will have a main activity in which you can choose the view between two option
 https://docs.google.com/document/d/1pRi4GR54HxW1sB94JfRyqFRk6am8wT06p-LWTHXffeI/edit?usp=sharing
 ## Trello link
 https://trello.com/b/vGv0cOIe/hosteleria-joviat-app
+## Canva link
+https://www.canva.com/design/DAF1W32A8LE/iG9Hxw_RKkwePiICki6V6g/edit?utm_content=DAF1W32A8LE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
