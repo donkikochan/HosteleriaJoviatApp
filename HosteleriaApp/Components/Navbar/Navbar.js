@@ -1,55 +1,45 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Image } from "react-native";
+import SearchBar from "./SearchBar";
+import GoBackArrow from "./GoBackArrow";
 
-const Navbar = () => {
+const Navbar = (props) => {
   return (
     <View style={styles.navbar}>
+      {props.showGoBack && <GoBackArrow />}
+      {props.showLogIn && <Text style={styles.text}>{props.text}</Text>}
+      {props.showSearch && <SearchBar />}
       <TouchableOpacity>
-        <Ionicons name="chevron-back" size={24} color="white" />
-      </TouchableOpacity>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search"
-        clearButtonMode="while-editing"
-      />
-      <TouchableOpacity>
-        <Ionicons name="md-menu" size={24} color="white" />
+        <Image
+          source={require("../../assets/logo.png")}
+          style={{ width: 50, height: 50 }}
+        />
       </TouchableOpacity>
     </View>
   );
 };
 
+const screenWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
   navbar: {
     color: "white",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "black",
+    backgroundColor: "#111820",
     paddingHorizontal: 10,
     paddingVertical: 15,
-    position: "fixed",
-    top: 110,
+    position: "absolute",
+    paddingTop: 47,
+    top: 0,
+    width: screenWidth,
   },
   text: {
     color: "white",
-  },
-  searchInput: {
-    flex: 1,
-    marginHorizontal: 25,
-    paddingHorizontal: 10,
-    height: 35,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
-    backgroundColor: "white",
+    fontSize: 16,
+    marginLeft: 10,
   },
 });
 
