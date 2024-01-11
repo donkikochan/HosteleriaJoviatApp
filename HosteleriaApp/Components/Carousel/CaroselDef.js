@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import CarouselComponent from "./CarouselComponent";
+import CustomCarousel from "./CustomCarousel";
+
 function CarouselDef() {
   const images = [
     {
@@ -12,9 +13,10 @@ function CarouselDef() {
         "https://media.revistaad.es/photos/620cbc911db9f1841aebdf15/16:9/w_2560%2Cc_limit/portada.jpg",
     },
   ];
+
   return (
-    <View>
-      <CarouselComponent items={images} />
+    <View style={{ marginTop: 112 }}>
+      <CustomCarousel images={images} />
     </View>
   );
 }
