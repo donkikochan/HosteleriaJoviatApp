@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import {StyleSheet, View, Text, TouchableOpacity} from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-function RestaurantInfoCard({titol, descripcio, accio, sourceImage}) {
+function RestaurantInfoCard({ titol, descripcio, accio, sourceImage }) {
   return (
     <View style={styles.container}>
       <View style={styles.group2}>
@@ -10,12 +10,15 @@ function RestaurantInfoCard({titol, descripcio, accio, sourceImage}) {
           <View style={styles.group4}>
             <Text style={styles.nomRestaurant}>{titol}</Text>
             <View style={styles.descripcioRestaurantRow}>
-              <Text style={styles.descripcioRestaurant}>
-                {descripcio}
-              </Text>
+              <Text style={styles.descripcioRestaurant}>{descripcio}</Text>
               <View style={styles.descripcioRestaurantFiller}></View>
               <TouchableOpacity style={styles.group3}>
-                <Ionicons name={sourceImage} style={styles.iconaImatge} size={40} resizeMode="cover"></Ionicons>
+                <Ionicons
+                  name={sourceImage}
+                  style={styles.iconaImatge}
+                  size={40}
+                  resizeMode="cover"
+                ></Ionicons>
                 <Text style={styles.clickHere}>{accio}</Text>
               </TouchableOpacity>
             </View>
@@ -45,12 +48,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     overflow: "hidden",
     justifyContent: "center",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   group4: {
     width: 248,
     height: 105,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   nomRestaurant: {
     fontFamily: "open-sans-700",
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 224,
     height: 26,
-    marginLeft: 12
+    marginLeft: 12,
   },
   descripcioRestaurant: {
     fontFamily: "open-sans-regular",
@@ -67,16 +70,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     textAlign: "center",
     width: 99,
-    height: 61
+    height: 61,
   },
   descripcioRestaurantFiller: {
     flex: 1,
-    flexDirection: "row"
+    flexDirection: "row",
   },
   group3: {
     width: 91,
     height: 68,
-    alignItems: "flex-end"
+    alignItems: "flex-end",
   },
   iconaImatge: {
     width: 40,
@@ -94,8 +97,8 @@ const styles = StyleSheet.create({
   descripcioRestaurantRow: {
     height: 68,
     flexDirection: "row",
-    marginTop: 11
-  }
+    marginTop: 11,
+  },
 });
 
 export default RestaurantInfoCard;
