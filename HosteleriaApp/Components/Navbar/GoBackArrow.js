@@ -2,10 +2,10 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const GoBackArrow = () => {
+const GoBackArrow = ({navigation}) => {
   return (
     <View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <Ionicons name="chevron-back" size={24} color="white" />
       </TouchableOpacity>
     </View>

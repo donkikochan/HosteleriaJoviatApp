@@ -15,10 +15,10 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <Navbar
-        showGoBack={true}
-        showLogIn={false}
+        showGoBack={false}
+        showLogIn={true}
         showSearch={false}
-        text="Login"
+        text="Home"
         screen="Home"
       />
       <View style={styles.rect}>
