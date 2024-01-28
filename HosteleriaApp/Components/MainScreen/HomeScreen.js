@@ -40,7 +40,7 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Navbar showGoBack={false} showLogIn={true} showSearch={true} text="Login" />
+      <Navbar showGoBack={false} showLogIn={true} showSearch={true} text="Login" screen="Login"/>
 
       <View style={styles.contentContainer}>
         <SwitchBar isMapView={isMapView} onToggleView={toggleView} />

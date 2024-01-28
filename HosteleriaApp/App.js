@@ -1,9 +1,7 @@
-import {StyleSheet, View} from "react-native";
-import Navbar from "./Components/Navbar/Navbar";
-import FooterNavbar from "./Components/FooterNavbar/FooterNavbar";
 import {NavigationContainer} from "@react-navigation/native";
 import LoginScreen from "./Screens/LoginScreen";
 import {createStackNavigator} from "@react-navigation/stack";
+import HomeScreen from "./Components/MainScreen/HomeScreen";
 
 const Stack = createStackNavigator();
 export default function App() {
@@ -16,26 +14,3 @@ export default function App() {
         </NavigationContainer>
     );
 }
-
-function HomeScreen() {
-    return (
-        <View style={styles.container}>
-            <Navbar
-                showGoBack={false}
-                showLogIn={true}
-                showSearch={true}
-                text="Login"
-                screen="Login"
-            />
-            <FooterNavbar/>
-        </View>
-    );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-  },
-});
