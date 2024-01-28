@@ -1,12 +1,16 @@
 // ListView.js
 import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-const ListViewComponent = ({ data }) => {
+const ListViewComponent = ({ data, navigation }) => {
   return (
     <ScrollView>
       {data.map((item) => (
-        <View key={item.id} style={styles.itemContainer}>
+        <TouchableOpacity
+        key={item.id}
+        onPress={() => navigation.navigate('Restaurant', { id: item.id })} // Agrega la navegación aquí
+      >
+        <View style={styles.itemContainer}>
           <View style={styles.textContainer}>
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.description}>{item.description}</Text>
@@ -22,6 +26,7 @@ const ListViewComponent = ({ data }) => {
           </View>
           <Image style={styles.image} source={{ uri: item.imageUrl }} />
         </View>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );

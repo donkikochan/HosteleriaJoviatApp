@@ -3,7 +3,8 @@ import Navbar from "../Navbar/Navbar";
 import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import CarouselDef from "../Carousel/CaroselDef";
 
-function RestaurantScreen() {
+function RestaurantScreen({route}) {
+  const id = route?.params?.id; 
   return (
     <View>
       <Navbar
@@ -18,4 +19,4 @@ function RestaurantScreen() {
   );
 }
 
-export default RestaurantScreen();
+export default RestaurantScreen;

@@ -34,7 +34,7 @@ function HomeScreen() {
     if (isMapView) {
       return <MapViewComponent />;
     } else {
-      return <ListViewComponent data={filteredData} />;
+      return <ListViewComponent data={filteredData} navigation={navigation}/>;
     }
   };
 

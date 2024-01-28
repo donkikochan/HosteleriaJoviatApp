@@ -10,7 +10,7 @@ const Navbar = (props) => {
     const navigation = useNavigation();
     return (
         <View style={styles.navbar}>
-            {props.showGoBack && <GoBackArrow/>}
+            {props.showGoBack && <GoBackArrow navigation={navigation}/>}
             {props.showLogIn && (
                 <TouchableOpacity onPress={() => navigation.navigate(props.screen)}>
                     <Text style={styles.text}>{props.text}</Text>
