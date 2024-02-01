@@ -11,12 +11,12 @@ import { useNavigation } from '@react-navigation/native';
 // Define or import your DATA property
 const DATA = Array.from({ length: 20 }, (_, index) => ({
   id: index.toString(),
-  title: `Item ${index + 1}`,
-  description: `Description for item ${index + 1}`,
-  imageUrl: `https://concepto.de/wp-content/uploads/2018/10/URL1-e1538664726127.jpg`,
+  title: `Restaurante ${index + 1}`,
+  description: `Description del restaurante ${index + 1}`,
+  imageUrl: `https://upload.wikimedia.org/wikipedia/commons/1/1d/Restaurant_in_The_Mus%C3%A9e_d%27Orsay.jpg`,
   workers: Array.from({ length: 3 }, (_, workerIndex) => ({
     id: `worker${index + 1}-${workerIndex + 1}`,
-    name: `Worker ${workerIndex + 1}`,
+    name: `Trabajador ${workerIndex + 1}`,
     workerImageUrl: `https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/default-profile-picture-male-icon.png`,
   })),
 }));
