@@ -9,10 +9,10 @@ import RestaurantInfoCard from "../RestaurantInfoCard/RestaurantInfoCard";
 function RestaurantScreen({ route }) {
   const id = route?.params?.id;
 
-  const itemsData = ["Item 1", "Item 2", "Item 3"];
+  const itemsData = ["Chef-Nahuel Bigon", "Somellier-Vicotria Gomez", "Cocinero-Pedro Juarez"];
   const restaurantInfo = {
-    titol: "Restaurant Escola Joviat",
-    descripcio: "Venid a descubrir una nueva experiencia gastronómica. Un concepto fresco, un servicio informal y actual, y una selección exquisita de platos elaborados con productos de proximidad y con un postre para disfrutar. ¡Una inmersión auténtica en el arte de la gastronomía!",
+    titol: "         Restaurant Escola Joviat",
+    descripcio: "Ven a descubrir una nueva experiencia gastronómica. Un concepto fresco, un servicio informal y actual.",
     accio: "Ver Más",
     sourceImage: "ios-restaurant",
     screen: "DetalleRestaurante",

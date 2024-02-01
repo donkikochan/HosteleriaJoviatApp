@@ -11,7 +11,7 @@ const Items = ({ name }) => {
       style={[styles.itemContainer, isPressed && styles.itemPressed]}
     >
       <Image
-        source={require("./tulio.jpg")} // Corregido aquí
+        source={require("./UserChef.png")} 
         style={styles.userIcon}
       />
       <Text style={styles.itemText}>{name}</Text>
