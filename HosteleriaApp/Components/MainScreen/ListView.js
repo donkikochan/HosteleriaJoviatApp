@@ -23,8 +23,8 @@ const ListViewComponent = ({ data, navigation }) => {
             <View style={styles.textContainer}>
               <Text style={styles.title}>{restaurant.nom}</Text>
               <Text style={styles.description}>
-                {restaurant.direccio.length > 50
-                  ? `${restaurant.direccio.substring(0, 35)}...`
+                {restaurant.direccio.length > 75
+                  ? `${restaurant.direccio.substring(0, 75)}...`
                   : restaurant.direccio}
               </Text>
 
