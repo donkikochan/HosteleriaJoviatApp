@@ -1,17 +1,17 @@
-import firebase from "@react-native-firebase/app";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
-const FirebaseConfig = {
-  apiKey: "your_api_key",
-  authDomain: "your_auth_domain",
-  projectId: "your_project_id",
-  storageBucket: "your_storage_bucket",
-  messagingSenderId: "your_messaging_sender_id",
-  appId: "your_app_id",
-  measurementId: "your_measurement_id",
+const firebaseConfig = {
+  apiKey: "AIzaSyCgPdFoAXsEfMELC_6rvmICsXFWemSkZy0",
+  authDomain: "hosteleria-app-joviat.firebaseapp.com",
+  projectId: "hosteleria-app-joviat",
+  storageBucket: "hosteleria-app-joviat.appspot.com",
+  messagingSenderId: "510663146644",
+  appId: "1:510663146644:web:e924f3e20032c409054881",
+  measurementId: "G-X1W5ZH7B43",
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-export default FirebaseConfig;
+export { db };
