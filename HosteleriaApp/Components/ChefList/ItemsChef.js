@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-const Items = ({ name, foto }) => {
+const Items = ({ name, foto, position }) => {
   const [isPressed, setIsPressed] = useState(false);
 
   return (
@@ -11,7 +11,7 @@ const Items = ({ name, foto }) => {
       style={[styles.itemContainer, isPressed && styles.itemPressed]}
     >
       <Image source={{ uri: foto }} style={styles.userIcon} />
-      <Text style={styles.itemText}>{name}</Text>
+      <Text style={styles.itemText}>{`${position} - ${name}`}</Text>
     </TouchableOpacity>
   );
 };
@@ -20,20 +20,24 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#A9A9A9",
+    backgroundColor: "white",
     borderRadius: 20,
     paddingVertical: 4,
-    paddingHorizontal: 10,
     marginVertical: 6,
-    width: "100%",
+    alignSelf: "center",
+    width: "95%",
+    borderWidth: 0.5,
+    borderColor: "black",
   },
   itemPressed: {
     backgroundColor: "black",
   },
   itemText: {
     fontSize: 20,
-    color: "white",
+    color: "black",
     marginLeft: 13,
+    marginRight: 10,
+    flexShrink: 1,
   },
   userIcon: {
     width: 40,
@@ -41,6 +45,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 1,
     borderColor: "black",
+    marginLeft: 10,
   },
 });
 

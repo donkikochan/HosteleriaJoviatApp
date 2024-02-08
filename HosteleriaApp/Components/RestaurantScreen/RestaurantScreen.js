@@ -71,7 +71,7 @@ function RestaurantScreen({ route }) {
         showSearch={false}
         text="Login"
       />
-      <CarouselDef />
+      <CarouselDef fotos={restaurantData.foto} />
       <ScrollView>
         <RestaurantInfoCard
           titol={restaurantData.nom}
@@ -81,7 +81,12 @@ function RestaurantScreen({ route }) {
           ubicacion={`https://www.google.com/maps/search/?api=1&query=${latitud},${longitud}`}
         />
         {workersData.map((worker, index) => (
-          <Items key={index} name={worker.nom} foto={worker.image} />
+          <Items
+            key={index}
+            name={worker.nom}
+            foto={worker.image}
+            position={worker.responsabilitat}
+          />
         ))}
       </ScrollView>
       <FooterNavbar />
