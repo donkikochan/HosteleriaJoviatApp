@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-const Items = ({ name }) => {
+const Items = ({ name, foto }) => {
   const [isPressed, setIsPressed] = useState(false);
 
   return (
@@ -10,10 +10,7 @@ const Items = ({ name }) => {
       onPressOut={() => setIsPressed(false)}
       style={[styles.itemContainer, isPressed && styles.itemPressed]}
     >
-      <Image
-        source={require("./UserChef.png")} 
-        style={styles.userIcon}
-      />
+      <Image source={{ uri: foto }} style={styles.userIcon} />
       <Text style={styles.itemText}>{name}</Text>
     </TouchableOpacity>
   );
@@ -42,6 +39,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 25,
+    borderWidth: 1,
+    borderColor: "black",
   },
 });
 
