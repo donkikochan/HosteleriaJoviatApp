@@ -22,7 +22,12 @@ const ListViewComponent = ({ data, navigation }) => {
           <View style={styles.itemContainer}>
             <View style={styles.textContainer}>
               <Text style={styles.title}>{restaurant.nom}</Text>
-              <Text style={styles.description}>{restaurant.direccio}</Text>
+              <Text style={styles.description}>
+                {restaurant.direccio.length > 50
+                  ? `${restaurant.direccio.substring(0, 35)}...`
+                  : restaurant.direccio}
+              </Text>
+
               {/* Renderizar trabajadores aquí si es necesario */}
               <View style={styles.workersContainer}>
                 {restaurant.workers.map((worker) => (
@@ -52,12 +57,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
     width: "100%", // Ocupa toda la anchura
+    minHeight: 200,
+    maxHeight: "auto",
   },
   image: {
-    width: 100,
-    height: 100, // Ajusta la altura según tus necesidades
+    width: 115,
+    height: 115, // Ajusta la altura según tus necesidades
     resizeMode: "cover",
     marginLeft: 10,
+    borderRadius: 10,
   },
   textContainer: {
     flex: 1,
@@ -83,6 +91,8 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     marginRight: 5,
+    borderWidth: 1,
+    borderColor: "black",
   },
   workerName: {
     fontSize: 14,
