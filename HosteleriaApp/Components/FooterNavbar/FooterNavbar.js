@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     paddingHorizontal: 50,
     paddingVertical: 15,
-    position: "absolute",
+    position: "relative",
     bottom: 0,
   },
   iconText: {
