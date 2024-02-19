@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
   container: {
     overflow: "visible",
     backgroundColor: "rgba(230, 230, 230,0)",
+    marginTop: 25,
+    marginBottom: 50,
   },
   group2: {
     overflow: "visible",
