@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-const Items = ({ name, foto, position }) => {
+const Items = ({ name, foto, position, isLast }) => {
   const [isPressed, setIsPressed] = useState(false);
 
   return (
     <TouchableOpacity
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
-      style={[styles.itemContainer, isPressed && styles.itemPressed]}
+      style={[
+        styles.itemContainer,
+        isPressed && styles.itemPressed,
+        isLast && styles.lastItem,
+      ]}
     >
       <Image source={{ uri: foto }} style={styles.userIcon} />
       <Text style={styles.itemText}>{`${position} - ${name}`}</Text>
@@ -46,6 +50,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "black",
     marginLeft: 10,
+  },
+  lastItem: {
+    marginBottom: 50,
   },
 });
 

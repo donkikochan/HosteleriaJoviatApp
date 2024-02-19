@@ -8,6 +8,12 @@ import {
   Text,
 } from "react-native";
 
+const Dot = ({ isActive }) => (
+  <View
+    style={[styles.dot, isActive ? styles.activeDot : styles.inactiveDot]}
+  />
+);
+
 const CustomCarousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollViewRef = useRef();
@@ -24,7 +30,7 @@ const CustomCarousel = ({ images }) => {
         animated: true,
       });
       setCurrentIndex(nextIndex);
-    }, 3000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [currentIndex, images.length, screenWidth]);
@@ -55,9 +61,9 @@ const CustomCarousel = ({ images }) => {
         ))}
       </ScrollView>
       <View style={styles.indicatorContainer}>
-        <Text style={styles.textIndicator}>{`${currentIndex + 1} / ${
-          images.length
-        }`}</Text>
+        {images.map((_, index) => (
+          <Dot key={index} isActive={index === currentIndex} />
+        ))}
       </View>
     </View>
   );
@@ -76,11 +82,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
+    marginBottom: 10,
   },
   textIndicator: {
     color: "#000",
     fontSize: 16,
     marginHorizontal: 10,
+  },
+  dot: {
+    height: 8,
+    width: 8,
+    borderRadius: 4,
+    marginHorizontal: 3,
+  },
+  activeDot: {
+    backgroundColor: "black",
+  },
+  inactiveDot: {
+    backgroundColor: "gray",
   },
 });
 

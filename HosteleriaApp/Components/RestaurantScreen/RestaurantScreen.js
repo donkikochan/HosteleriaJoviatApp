@@ -86,6 +86,7 @@ function RestaurantScreen({ route }) {
             name={worker.nom}
             foto={worker.image}
             position={worker.responsabilitat}
+            isLast={index === workersData.length - 1}
           />
         ))}
       </ScrollView>
