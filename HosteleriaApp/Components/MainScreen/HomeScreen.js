@@ -1,14 +1,14 @@
 // HomeScreen.js
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import React, {useState, useEffect} from "react";
+import {View, StyleSheet, ScrollView} from "react-native";
 import MapViewComponent from "./MapView";
 import ListViewComponent from "./ListView";
 import SwitchBar from "./SwitchBar";
 import Navbar from "../Navbar/Navbar";
 import FooterNavbar from "../FooterNavbar/FooterNavbar";
-import { useNavigation } from "@react-navigation/native";
-import { db } from "../FirebaseConfig";
-import { collection, getDocs, query, limit } from "firebase/firestore";
+import {useNavigation} from "@react-navigation/native";
+import {db} from "../FirebaseConfig";
+import {collection, getDocs, query, limit} from "firebase/firestore";
 
 // Define or import your DATA property
 /*const DATA = Array.from({ length: 20 }, (_, index) => ({
@@ -24,122 +24,125 @@ import { collection, getDocs, query, limit } from "firebase/firestore";
 }));*/
 
 function HomeScreen() {
-  const [filteredData, setFilteredData] = useState([]);
-  const [restaurantsData, setRestaurantsData] = useState([]);
-  const [isMapView, setIsMapView] = useState(false);
-  const navigation = useNavigation();
+    const [filteredData, setFilteredData] = useState([]);
+    const [restaurantsData, setRestaurantsData] = useState([]);
+    const [isMapView, setIsMapView] = useState(false);
+    const navigation = useNavigation();
 
-  //funcion para obtener los datos de los restaurantes
-  const fetchRestaurantsData = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "Restaurant"));
-      const restaurants = [];
-      querySnapshot.forEach((doc) => {
-        const restaurantData = {
-          id: doc.id,
-          ...doc.data(),
-          workers: [], //preparamos para llenar con datos de los alumnos
+    const [activeContent, setActiveContent] = useState("ListView");
+
+    //funcion para obtener los datos de los restaurantes
+    const fetchRestaurantsData = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, "Restaurant"));
+            const restaurants = [];
+            querySnapshot.forEach((doc) => {
+                const restaurantData = {
+                    id: doc.id,
+                    ...doc.data(),
+                    workers: [], //preparamos para llenar con datos de los alumnos
+                };
+                restaurants.push(restaurantData);
+            });
+            setRestaurantsData(restaurants);
+        } catch (error) {
+            console.error("error al obtener los datos de los restaurantes", error);
+        }
+    };
+
+    //funcion para obtener los alumnos del restaurante
+    const fetchWorkersData = async (restaurantId) => {
+        try {
+            const workersQuery = query(
+                collection(db, "Restaurant", restaurantId, "alumnes"),
+                limit(3)
+            );
+            const querySnapshot = await getDocs(workersQuery);
+            const workers = [];
+            querySnapshot.forEach((doc) => {
+                workers.push({
+                    id: doc.id,
+                    ...doc.data(),
+                });
+            });
+            return workers;
+        } catch (error) {
+            console.error("Error al obtener los datos de los alumnos: ", error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchAllData = async () => {
+            await fetchRestaurantsData();
         };
-        restaurants.push(restaurantData);
-      });
-      setRestaurantsData(restaurants);
-    } catch (error) {
-      console.error("error al obtener los datos de los restaurantes", error);
-    }
-  };
+        fetchAllData();
+    }, []);
 
-  //funcion para obtener los alumnos del restaurante
-  const fetchWorkersData = async (restaurantId) => {
-    try {
-      const workersQuery = query(
-        collection(db, "Restaurant", restaurantId, "alumnes"),
-        limit(3)
-      );
-      const querySnapshot = await getDocs(workersQuery);
-      const workers = [];
-      querySnapshot.forEach((doc) => {
-        workers.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-      return workers;
-    } catch (error) {
-      console.error("Error al obtener los datos de los alumnos: ", error);
-    }
-  };
+    useEffect(() => {
+        const fetchAndSetWorkers = async () => {
+            // Solo procede si hay datos de restaurantes para procesar.
+            if (restaurantsData.length > 0) {
+                const promises = restaurantsData.map(async (restaurant) => {
+                    const workers = await fetchWorkersData(restaurant.id);
+                    return {...restaurant, workers}; // Retorna el restaurante con los trabajadores.
+                });
+                const updatedRestaurantsData = await Promise.all(promises);
+                setFilteredData(updatedRestaurantsData); // Actualiza el estado con la nueva información.
+            }
+        };
 
-  useEffect(() => {
-    const fetchAllData = async () => {
-      await fetchRestaurantsData();
-    };
-    fetchAllData();
-  }, []);
+        fetchAndSetWorkers();
+    }, [restaurantsData]);
 
-  useEffect(() => {
-    const fetchAndSetWorkers = async () => {
-      // Solo procede si hay datos de restaurantes para procesar.
-      if (restaurantsData.length > 0) {
-        const promises = restaurantsData.map(async (restaurant) => {
-          const workers = await fetchWorkersData(restaurant.id);
-          return { ...restaurant, workers }; // Retorna el restaurante con los trabajadores.
-        });
-        const updatedRestaurantsData = await Promise.all(promises);
-        setFilteredData(updatedRestaurantsData); // Actualiza el estado con la nueva información.
-      }
+    const toggleView = () => {
+        setIsMapView(!isMapView);
     };
 
-    fetchAndSetWorkers();
-  }, [restaurantsData]);
+    const renderContent = () => {
+        if (isMapView) {
+            return <MapViewComponent/>;
+        } else if (activeContent === "Home") {
+            return <ListViewComponent data={filteredData} navigation={navigation}/>;
+        }
+        //console.log(activeContent)
+    };
 
-  const toggleView = () => {
-    setIsMapView(!isMapView);
-  };
+    return (
+        <View style={styles.container}>
+            <Navbar
+                showGoBack={false}
+                showLogIn={true}
+                showSearch={true}
+                text="Login"
+                screen="Login"
+            />
 
-  const renderContent = () => {
-    if (isMapView) {
-      return <MapViewComponent />;
-    } else {
-      return <ListViewComponent data={filteredData} navigation={navigation} />;
-    }
-  };
+            <View style={styles.contentContainer}>
+                <SwitchBar isMapView={isMapView} onToggleView={toggleView}/>
+                <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
+            </View>
 
-  return (
-    <View style={styles.container}>
-      <Navbar
-        showGoBack={false}
-        showLogIn={true}
-        showSearch={true}
-        text="Login"
-        screen="Login"
-      />
-
-      <View style={styles.contentContainer}>
-        <SwitchBar isMapView={isMapView} onToggleView={toggleView} />
-        <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
-      </View>
-
-      <FooterNavbar />
-    </View>
-  );
+            <FooterNavbar setActiveContent={setActiveContent}/>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: 120,
-  },
-  contentContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  scrollView: {
-    flex: 1,
-    width: "100%",
-    maxWidth: 600,
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+        paddingTop: 120,
+    },
+    contentContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    scrollView: {
+        flex: 1,
+        width: "100%",
+        maxWidth: 600,
+    },
 });
 
 export default HomeScreen;
