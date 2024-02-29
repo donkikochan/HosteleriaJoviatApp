@@ -10,10 +10,11 @@ import ListViewComponent from "../MainScreen/ListView";
 function FavRestScreen() {
 
     const navigation = useNavigation();
-    const [activeContent, setActiveContent] = useState("Favorite");
+    const [activeContent, setContent] = useState("Favorite");
     const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
 
     useEffect(() => {
+        setContent("Favorite")
         const getFavoriteRestaurants = async () => {
             try {
                 // Obtener todos los datos almacenados en AsyncStorage
@@ -48,7 +49,7 @@ function FavRestScreen() {
                 <ScrollView style={styles.scrollView}>
                     <ListViewComponent data={favoriteRestaurants} navigation={navigation}/>
                 </ScrollView>
-                <FooterNavbar setActiveContent={setActiveContent} navigation={navigation}/>
+                <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
             </View>
         </View>
     )

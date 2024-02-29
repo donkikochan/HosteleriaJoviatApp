@@ -29,7 +29,7 @@ function HomeScreen() {
     const [isMapView, setIsMapView] = useState(false);
     const navigation = useNavigation();
 
-    const [activeContent, setActiveContent] = useState("Home");
+    const [activeContent, setContent] = useState("Home");
 
     //funcion para obtener los datos de los restaurantes
     const fetchRestaurantsData = async () => {
@@ -72,6 +72,7 @@ function HomeScreen() {
     };
 
     useEffect(() => {
+        setContent("Home")
         const fetchAllData = async () => {
             await fetchRestaurantsData();
         };
@@ -123,7 +124,7 @@ function HomeScreen() {
                 <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
             </View>
 
-            <FooterNavbar setActiveContent={setActiveContent} navigation={navigation}/>
+            <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
         </View>
     );
 }
