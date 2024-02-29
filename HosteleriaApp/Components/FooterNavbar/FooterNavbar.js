@@ -1,19 +1,43 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import React, {useEffect, useState} from "react";
+import {View, Text, TouchableOpacity, StyleSheet} from "react-native";
+import {Ionicons} from "@expo/vector-icons";
 import ListViewComponent from "../MainScreen/ListView";
 
-function FooterNavbar({ setActiveContent }) {
-  const [activeButton, setActiveButton] = useState("Home");
+function FooterNavbar({setActiveContent, navigation}) {
 
-  const handlePress = (buttonName) => {
-    setActiveButton(buttonName);
-    /*if (activeButton === "Home") {
-            setActiveContent("ListView")
-        }*/
-    setActiveContent(buttonName);
-    //console.log("pressed!")
-  };
+    const [activeButton, setActiveButton] = useState(null);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener("state", (e) => {
+            // Obtener el nombre de la pantalla actual
+            const currentRouteName = e.data.state.routeNames[e.data.state.index];
+            setActiveButton(currentRouteName); // Actualizar el estado del botón activo
+            setActiveContent(currentRouteName)
+            //console.log('Evento de cambio de estado de navegación:', e);
+        });
+
+        return unsubscribe; // Limpiar el efecto al desmontar el componente
+    }, [navigation]); // Volver a ejecutar el efecto cuando cambia la navegación
+
+    const handlePress = (buttonName) => {
+        setActiveButton(buttonName);
+        //console.log("After setActiveButton:", buttonName);
+        setActiveContent(buttonName);
+        navigation.navigate(buttonName);
+        setActiveButton(buttonName);
+        //console.log("After setActiveButton:", buttonName);
+        setActiveContent(buttonName);
+    };
+    /*useEffect(() => {
+        console.log(activeButton); // Esta función de devolución de llamada se ejecutará después de que activeButton se haya actualizado.
+    }, [activeButton]);*/
+    /*useEffect(() => {
+        const unsubscribe = navigation.addListener('state', (e) => {
+            console.log('Evento de cambio de estado de navegación:', e);
+        });
+
+        return unsubscribe;
+    }, [navigation]);*/
 
   return (
     <View style={styles.footer}>
