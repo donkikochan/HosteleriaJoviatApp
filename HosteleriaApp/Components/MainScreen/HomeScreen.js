@@ -55,7 +55,7 @@ function HomeScreen() {
         try {
             const workersQuery = query(
                 collection(db, "Restaurant", restaurantId, "alumnes"),
-                limit(3)
+                //limit(3)
             );
             const querySnapshot = await getDocs(workersQuery);
             const workers = [];
