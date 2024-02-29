@@ -88,9 +88,9 @@ function HomeScreen() {
                 });
                 const updatedRestaurantsData = await Promise.all(promises);
                 setFilteredData(updatedRestaurantsData); // Actualiza el estado con la nueva información.
+                //console.log(updatedRestaurantsData)
             }
         };
-
         fetchAndSetWorkers();
     }, [restaurantsData]);
 
@@ -100,9 +100,9 @@ function HomeScreen() {
 
     const renderContent = () => {
         if (isMapView) {
-          return <MapViewComponent />;
-        } else if (activeContent === "Home") {
-          return <ListViewComponent data={filteredData} navigation={navigation} />;
+            return <MapViewComponent/>;
+        } else {
+            return <ListViewComponent data={filteredData} navigation={navigation}/>;
         }
         //console.log(activeContent)
       };
@@ -123,7 +123,7 @@ function HomeScreen() {
                 <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
             </View>
 
-            <FooterNavbar setActiveContent={setActiveContent}/>
+            <FooterNavbar setActiveContent={setActiveContent} navigation={navigation}/>
         </View>
     );
 }
