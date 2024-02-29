@@ -1,23 +1,30 @@
-// MapView.js
 import React, { useRef, useEffect, useState } from "react";
-import { View, StyleSheet, Dimensions, Image } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { View, StyleSheet, Dimensions, Image, TouchableOpacity, Text, Modal } from "react-native";
+import MapView, { Marker, Callout } from "react-native-maps";
 import markerJoviat from "./pin_joviat.png";
+import { useNavigation } from "@react-navigation/native";
 import { db } from "../FirebaseConfig";
 import { QuerySnapshot, collection, getDocs } from "firebase/firestore";
+
 const MapViewComponent = () => {
   const mapRef = useRef(null);
   const [restaurants, setRestaurants] = useState([]);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // Obtener datos de Firebase al montar el componente
+    console.log("Fetching restaurants data...");
     const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, "Restaurant"));
-      const restaurantsData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setRestaurants(restaurantsData);
+      try {
+        const querySnapshot = await getDocs(collection(db, "Restaurant"));
+        const restaurantsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log("Fetched restaurants data:", restaurantsData);
+        setRestaurants(restaurantsData);
+      } catch (error) {
+        console.error("Error fetching restaurants data:", error);
+      }
     };
 
     fetchData();
@@ -34,6 +41,13 @@ const MapViewComponent = () => {
       }, 1000);
     }
   }, []);
+
+  const handleMarkerPress = (restaurantId) => {
+    console.log("Marker pressed. Restaurant ID:", restaurantId);
+    navigation.navigate("Restaurant", { id: restaurantId });
+  };
+  
+  
 
   return (
     <View style={styles.mapContainer}>
@@ -56,12 +70,15 @@ const MapViewComponent = () => {
           title="Restaurant Joviat"
           identifier="initial_marker"
         >
-          <Image source={markerJoviat} style={{ width: 35, height: 50 }} />
+          <TouchableOpacity onPress={() => handleMarkerPress("initial_marker")}>
+            <Image source={markerJoviat} style={{ width: 35, height: 50 }} />
+          </TouchableOpacity>
         </Marker>
 
         {/* Marcadores para los restaurantes de Firebase */}
         {restaurants.map((restaurant) => (
           <Marker
+            key={restaurant.id}
             coordinate={{
               latitude: restaurant.latitud,
               longitude: restaurant.longitud,
@@ -70,6 +87,11 @@ const MapViewComponent = () => {
             identifier={restaurant.id}
           >
             <Image source={markerJoviat} style={{ width: 35, height: 50 }} />
+            <Callout onPress={() => handleMarkerPress(restaurant.id)}>
+              <View style={styles.calloutContainer}>
+                <Text style={styles.calloutText}>{restaurant.nom}</Text>
+              </View>
+            </Callout>
           </Marker>
         ))}
       </MapView>
@@ -85,6 +107,22 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
+  calloutContainer: {
+    width: 90,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center', 
+  },
+  calloutText: {
+    fontSize: 14, 
+    fontWeight: 'bold', 
+    textAlign: 'center',
+  },
 });
+
+
+
 
 export default MapViewComponent;

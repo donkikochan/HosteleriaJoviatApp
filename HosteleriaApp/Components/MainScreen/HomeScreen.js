@@ -99,13 +99,13 @@ function HomeScreen() {
     };
 
     const renderContent = () => {
-        if (isMapView) {
-            return <MapViewComponent/>;
-        } else if (activeContent === "Home") {
+        if (!isMapView) {
             return <ListViewComponent data={filteredData} navigation={navigation}/>;
+        } else {
+            return <MapViewComponent/>;
         }
-        //console.log(activeContent)
     };
+    
 
     return (
         <View style={styles.container}>
