@@ -29,7 +29,7 @@ function HomeScreen() {
     const [isMapView, setIsMapView] = useState(false);
     const navigation = useNavigation();
 
-    const [activeContent, setActiveContent] = useState("ListView");
+    const [activeContent, setActiveContent] = useState("Home");
 
     //funcion para obtener los datos de los restaurantes
     const fetchRestaurantsData = async () => {
@@ -99,12 +99,13 @@ function HomeScreen() {
     };
 
     const renderContent = () => {
-        if (!isMapView) {
-            return <ListViewComponent data={filteredData} navigation={navigation}/>;
-        } else {
-            return <MapViewComponent/>;
+        if (isMapView) {
+          return <MapViewComponent />;
+        } else if (activeContent === "Home") {
+          return <ListViewComponent data={filteredData} navigation={navigation} />;
         }
-    };
+        //console.log(activeContent)
+      };
     
 
     return (
