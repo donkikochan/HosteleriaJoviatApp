@@ -87,12 +87,7 @@ function RestaurantScreen({route}) {
 
     const saveToFavorites = async () => {
         try {
-            let workersToSave = [...workersData]; // Hacemos una copia de los datos de los trabajadores
-            if (workersToSave.length > 3) {
-                // Si hay más de 3 trabajadores, conservamos solo los primeros 3
-                workersToSave = workersToSave.slice(0, 3);
-            }
-            const restaurantWithWorkers = { ...restaurantData, workers: workersToSave };
+            const restaurantWithWorkers = { ...restaurantData, workers: workersData };
             // Guardar el restaurante en AsyncStorage
             await AsyncStorage.setItem(`restaurant_${restaurantData.id}`, JSON.stringify(restaurantWithWorkers));
         } catch (error) {
@@ -154,7 +149,7 @@ function RestaurantScreen({route}) {
                     />
                 ))}
             </ScrollView>
-            <FooterNavbar setActiveContent={setActiveContent} navigation={navigation}/>
+            <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
         </View>
     );
 }
