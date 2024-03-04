@@ -6,6 +6,7 @@ import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import Navbar from "../Navbar/Navbar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ListViewComponent from "../MainScreen/ListView";
+import MapViewComponent from "../MainScreen/MapView";
 
 function FavRestScreen() {
 
@@ -27,14 +28,22 @@ function FavRestScreen() {
                     setFavoriteRestaurants(favoriteRestaurants);
                 }
                 else {
-                    console.log("No hay restaurantes favoritos almacenados.");
+                    //console.log("No hay restaurantes favoritos almacenados.");
                 }
             } catch (error) {
                 console.error("Error al obtener los restaurantes favoritos", error);
             }
         };
         getFavoriteRestaurants();
-    }, []);
+    }, [navigation]);
+
+    const renderContent = () => {
+        if (favoriteRestaurants.length < 1) {
+            return <Text style={styles.noRestaurantsText}>No hay restaurantes favoritos almacenados</Text>
+        } else {
+            return <ListViewComponent data={favoriteRestaurants} navigation={navigation}/>;
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -47,7 +56,7 @@ function FavRestScreen() {
             />
             <View style={styles.contentContainer}>
                 <ScrollView style={styles.scrollView}>
-                    <ListViewComponent data={favoriteRestaurants} navigation={navigation}/>
+                    {renderContent()}
                 </ScrollView>
                 <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
             </View>
@@ -69,6 +78,18 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         maxWidth: 600,
+    },
+    noRestaurantsText: {
+        alignSelf: 'center',
+        justifyContent: 'space-between',
+        textAlign: 'center',
+        position: 'relative',
+        alignItems: 'center',
+        display: 'flex',
+        marginTop: '50%',
+        verticalAlign: 'middle',
+        paddingVertical: '20%',
+        fontSize: 20
     },
 });
 
