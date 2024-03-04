@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -10,8 +10,23 @@ import {
 import RestaurantInfoCard from "../Components/RestaurantInfoCard/RestaurantInfoCard";
 import Navbar from "../Components/Navbar/Navbar";
 import { Ionicons } from "@expo/vector-icons";
+import { auth } from "../Components/FirebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("Usuario logueado con exito");
+      //Navegar al homescreen
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Error en el inicio de sesion: ", error.message);
+    }
+  };
   return (
     <View style={styles.container}>
       <Navbar
@@ -27,23 +42,27 @@ const LoginScreen = () => {
           <View style={styles.inputBox}>
             <Ionicons name="mail" size={25} color="black" />
             <TextInput
-              placeholder=""
+              placeholder="Correu Electrónic"
               maxLength={30}
               style={styles.placeholder}
+              value={email}
+              onChangeText={setEmail}
             ></TextInput>
           </View>
           <Text style={styles.contrasenya}>CONTRASENYA:</Text>
           <View style={styles.inputBox}>
             <Ionicons name="lock-open" size={25} color="black" />
             <TextInput
-              placeholder=""
+              placeholder="Contrasenya"
               secureTextEntry={true}
               maxLength={30}
               style={styles.contrasenya2}
+              value={password}
+              onChangeText={setPassword}
             ></TextInput>
           </View>
           <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={{ fontSize: 18, fontWeight: "bold" }}>Enviar</Text>
           </TouchableOpacity>
         </View>
