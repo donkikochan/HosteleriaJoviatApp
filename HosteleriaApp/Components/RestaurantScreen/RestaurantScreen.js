@@ -5,11 +5,12 @@ import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import CarouselDef from "../Carousel/CaroselDef";
 import Items from "../ChefList/ItemsChef";
 import RestaurantInfoCard from "../RestaurantInfoCard/RestaurantInfoCard";
-import {db} from "../FirebaseConfig";
-import {doc, getDoc, collection, getDocs} from "firebase/firestore";
+import { db } from "../FirebaseConfig";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import {Ionicons} from "@expo/vector-icons";
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 function RestaurantScreen({route}) {
     const [restaurantData, setRestaurantData] = useState(null);
@@ -62,6 +63,7 @@ function RestaurantScreen({route}) {
         if (id) {
             fetchRestaurantData();
         }
+      
         // Recuperar el estado del favorito al montar el componente
         const retrieveFavoriteStatus = async () => {
             try {
@@ -84,8 +86,14 @@ function RestaurantScreen({route}) {
     }
     const longitud = restaurantData.longitud;
     const latitud = restaurantData.latitud;
+  
+  const navigateToWorkerScreen = (workerId) => {
+    console.log("Navigating to WorkerScreen with workerId:", workerId);
+    navigation.navigate('WorkerScreen', { workerId, restaurantId: id });
+  };
 
-    const saveToFavorites = async () => {
+
+  const saveToFavorites = async () => {
         try {
             const restaurantWithWorkers = { ...restaurantData, workers: workersData };
             // Guardar el restaurante en AsyncStorage
@@ -141,11 +149,10 @@ function RestaurantScreen({route}) {
                 />
                 {workersData.map((worker, index) => (
                     <Items
-                        key={index}
-                        name={worker.nom}
-                        foto={worker.image}
-                        position={worker.responsabilitat}
-                        isLast={index === workersData.length - 1}
+                    key={worker.id}
+                    worker={worker}
+                    onPress={() => navigateToWorkerScreen(worker.id)}
+                    navigation={navigation}
                     />
                 ))}
             </ScrollView>
