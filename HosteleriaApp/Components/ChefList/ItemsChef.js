@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-const Items = ({ name, foto, position, isLast }) => {
+const Items = ({ worker, onPress, navigation }) => {
   const [isPressed, setIsPressed] = useState(false);
-
   return (
     <TouchableOpacity
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
+      onPress={onPress} // Usamos la prop onPress pasada desde RestaurantScreen
       style={[
         styles.itemContainer,
         isPressed && styles.itemPressed,
-        isLast && styles.lastItem,
       ]}
     >
-      <Image source={{ uri: foto }} style={styles.userIcon} />
-      <Text style={styles.itemText}>{`${position} - ${name}`}</Text>
+      <Image source={{ uri: worker.image }} style={styles.userIcon} />
+      <Text style={styles.itemText}>{`${worker.responsabilitat} - ${worker.nom}`}</Text>
     </TouchableOpacity>
   );
 };

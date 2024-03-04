@@ -7,11 +7,13 @@ import Items from "../ChefList/ItemsChef";
 import RestaurantInfoCard from "../RestaurantInfoCard/RestaurantInfoCard";
 import { db } from "../FirebaseConfig";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { useNavigation } from '@react-navigation/native';
 
 function RestaurantScreen({ route }) {
   const [restaurantData, setRestaurantData] = useState(null);
   const [workersData, setWorkersData] = useState([]);
   const id = route?.params?.id;
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
@@ -28,27 +30,19 @@ function RestaurantScreen({ route }) {
       } catch (error) {
         console.error("Error al obtener los datos del restaurante", error);
       }
-    };
+    }
 
     const fetchWorkersData = async (restaurantId) => {
       try {
-        const workersQuery = collection(
-          db,
-          "Restaurant",
-          restaurantId,
-          "alumnes"
-        );
+        const workersQuery = collection(db, "Restaurant", restaurantId, "alumnes");
         const querySnapshot = await getDocs(workersQuery);
-        const workers = querySnapshot.docs.map((doc) => ({
+        const workers = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
         setWorkersData(workers);
       } catch (error) {
-        console.error(
-          "Error al obtener los datos de los trabajadores: ",
-          error
-        );
+        console.error("Error al obtener los datos de los trabajadores: ", error);
       }
     };
 
@@ -58,10 +52,16 @@ function RestaurantScreen({ route }) {
   }, [id]);
 
   if (!restaurantData) {
-    return <Text>Cargando...</Text>; // O algún indicador de carga
+    return <Text>Cargando...</Text>;
   }
   const longitud = restaurantData.longitud;
   const latitud = restaurantData.latitud;
+
+  const navigateToWorkerScreen = (workerId) => {
+    console.log("Navigating to WorkerScreen with workerId:", workerId);
+    navigation.navigate('WorkerScreen', { workerId, restaurantId: id });
+  };
+
 
   return (
     <View style={styles.container}>
@@ -80,24 +80,25 @@ function RestaurantScreen({ route }) {
           tel={restaurantData.tel}
           ubicacion={`https://www.google.com/maps/search/?api=1&query=${latitud},${longitud}`}
         />
-        {workersData.map((worker, index) => (
-          <Items
-            key={index}
-            name={worker.nom}
-            foto={worker.image}
-            position={worker.responsabilitat}
-            isLast={index === workersData.length - 1}
-          />
-        ))}
+      {workersData.map((worker, index) => (
+        <Items
+        key={worker.id}
+        worker={worker}
+        onPress={() => navigateToWorkerScreen(worker.id)}
+        navigation={navigation}
+        />
+      ))}
       </ScrollView>
       <FooterNavbar />
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  
 });
 
 export default RestaurantScreen;
