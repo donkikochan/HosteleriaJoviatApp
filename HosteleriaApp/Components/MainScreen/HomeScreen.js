@@ -29,7 +29,7 @@ function HomeScreen() {
     const [isMapView, setIsMapView] = useState(false);
     const navigation = useNavigation();
 
-    const [activeContent, setActiveContent] = useState("ListView");
+    const [activeContent, setContent] = useState("Home");
 
     //funcion para obtener los datos de los restaurantes
     const fetchRestaurantsData = async () => {
@@ -55,7 +55,7 @@ function HomeScreen() {
         try {
             const workersQuery = query(
                 collection(db, "Restaurant", restaurantId, "alumnes"),
-                limit(3)
+                //limit(3)
             );
             const querySnapshot = await getDocs(workersQuery);
             const workers = [];
@@ -72,6 +72,7 @@ function HomeScreen() {
     };
 
     useEffect(() => {
+        setContent("Home")
         const fetchAllData = async () => {
             await fetchRestaurantsData();
         };
@@ -88,9 +89,9 @@ function HomeScreen() {
                 });
                 const updatedRestaurantsData = await Promise.all(promises);
                 setFilteredData(updatedRestaurantsData); // Actualiza el estado con la nueva información.
+                //console.log(updatedRestaurantsData)
             }
         };
-
         fetchAndSetWorkers();
     }, [restaurantsData]);
 
@@ -101,11 +102,12 @@ function HomeScreen() {
     const renderContent = () => {
         if (isMapView) {
             return <MapViewComponent/>;
-        } else if (activeContent === "Home") {
+        } else {
             return <ListViewComponent data={filteredData} navigation={navigation}/>;
         }
         //console.log(activeContent)
-    };
+      };
+    
 
     return (
         <View style={styles.container}>
@@ -122,7 +124,7 @@ function HomeScreen() {
                 <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
             </View>
 
-            <FooterNavbar setActiveContent={setActiveContent}/>
+            <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
         </View>
     );
 }
