@@ -9,7 +9,7 @@ import { doc, getDoc } from "firebase/firestore";
 
 const WorkerScreen = ({ route }) => {
   const [workerData, setWorkerData] = useState(null);
-  const { workerId, restaurantId } = route.params;
+  const { workerId, restaurantId, restaurantName } = route.params;
   const screenHeight = Dimensions.get('window').height;
 
   useEffect(() => {
@@ -48,9 +48,9 @@ const WorkerScreen = ({ route }) => {
       <View style={styles.scrollViewContainer}>
         <WorkerInfoCard {...workerData} />
 
-        <Text style={styles.title}>Hisotrial de trabajo:</Text>
+        <Text style={styles.title}>Llocs de treball:</Text>
         <ScrollView style={styles.scrollView}>
-        <ItemPlaceWorker />
+        <ItemPlaceWorker restaurantName={restaurantName} responsabilitat={route.params.responsabilitat}/>
       </ScrollView>
       </View>
 
