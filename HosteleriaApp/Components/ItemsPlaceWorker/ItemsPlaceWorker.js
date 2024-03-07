@@ -1,45 +1,16 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { Text, StyleSheet, TouchableOpacity, ScrollView,View } from "react-native";
 
-const ItemPlaceWorker = () => {
+const ItemPlaceWorker = ({ responsabilitat, restaurantName }) => {
  
-  const workerPlaces = [
-    "Lugar de Trabajo 1",
-    "Lugar de Trabajo 2",
-    "Lugar de Trabajo 3",
-    "Lugar de Trabajo 4",
-    "Lugar de Trabajo 4",
-    "Lugar de Trabajo 4",
-    "Lugar de Trabajo 4",
-    "Lugar de Trabajo 4"
-   
-  ];
-
-  const [isPressed, setIsPressed] = useState(new Array(workerPlaces.length).fill(false));
 
   return (
     <ScrollView style={styles.scrollView}>
-      {workerPlaces.map((place, index) => (
-        <TouchableOpacity
-          key={index}
-          onPressIn={() => {
-            let pressedStates = [...isPressed];
-            pressedStates[index] = true;
-            setIsPressed(pressedStates);
-          }}
-          onPressOut={() => {
-            let pressedStates = [...isPressed];
-            pressedStates[index] = false;
-            setIsPressed(pressedStates);
-          }}
-          style={[
-            styles.itemContainer,
-            isPressed[index] && styles.itemPressed,
-          ]}
-        >
-          <Text style={styles.itemText}>{place}</Text>
-        </TouchableOpacity>
-      ))}
+      <View style={styles.itemContainer}>
+        <Text style={styles.itemText}>
+         {responsabilitat} - {restaurantName}
+        </Text>
+      </View>
     </ScrollView>
   );
 };

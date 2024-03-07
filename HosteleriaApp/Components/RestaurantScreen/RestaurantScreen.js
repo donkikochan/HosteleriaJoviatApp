@@ -87,9 +87,13 @@ function RestaurantScreen({route}) {
     const longitud = restaurantData.longitud;
     const latitud = restaurantData.latitud;
   
-  const navigateToWorkerScreen = (workerId) => {
-    console.log("Navigating to WorkerScreen with workerId:", workerId);
-    navigation.navigate('WorkerScreen', { workerId, restaurantId: id });
+  const navigateToWorkerScreen = (worker) => {
+    navigation.navigate('WorkerScreen', { 
+        workerId: worker.id, 
+        restaurantId: id,
+        restaurantName: restaurantData.nom, 
+        responsabilitat: worker.responsabilitat
+    });
   };
 
 
@@ -151,7 +155,7 @@ function RestaurantScreen({route}) {
                     <Items
                     key={worker.id}
                     worker={worker}
-                    onPress={() => navigateToWorkerScreen(worker.id)}
+                    onPress={() => navigateToWorkerScreen(worker)}
                     navigation={navigation}
                     />
                 ))}
