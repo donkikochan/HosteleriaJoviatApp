@@ -1,47 +1,74 @@
-import React from "react";
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 
 const ListViewComponent = ({ data, navigation }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+  };
+
   const renderAdditionalWorkers = (workers) => {
     return (
       <View style={styles.additionalWorkersContainer}>
-        {workers.slice(2, 5).map((worker, index) => ( // Limita a mostrar solo las siguientes 3 imágenes de trabajadores adicionales
+        {workers.slice(2, 5).map((worker, index) => (
           <Image key={index} style={[styles.additionalWorkerImage, { marginLeft: index > 0 ? -15 : 0 }]} source={{ uri: worker.image }} />
         ))}
-        {workers.length > 4 && ( // Muestra el texto solo si hay más de 3 trabajadores adicionales
+        {workers.length > 4 && (
           <Text style={styles.additionalWorkersText}>+{workers.length - 2} treballadors</Text>
         )}
       </View>
     );
   };
 
+  const filteredData = data.filter((restaurant) => {
+    const restaurantNameMatch = restaurant.nom.toLowerCase().includes(searchTerm.toLowerCase());
+    const workerNameMatch = restaurant.workers.some((worker) => worker.nom.toLowerCase().includes(searchTerm.toLowerCase()));
+    return restaurantNameMatch || workerNameMatch;
+  });
+
   return (
-    <ScrollView>
-      {data.map((restaurant) => (
-        <TouchableOpacity key={restaurant.id} onPress={() => navigation.navigate("Restaurant", { id: restaurant.id })}>
-          <View style={styles.itemContainer}>
-            <View style={styles.textContainer}>
-              <Text style={styles.title}>{restaurant.nom}</Text>
-              <Text style={styles.description}>{restaurant.direccio}</Text>
-              <View style={styles.workersContainer}>
-                {restaurant.workers.slice(0, 2).map((worker) => (
-                  <View key={worker.id} style={styles.workerItem}>
-                    <Image style={styles.workerImage} source={{ uri: worker.image }} />
-                    <Text style={styles.workerName}>{worker.nom}</Text>
-                  </View>
-                ))}
-                {restaurant.workers.length > 2 && renderAdditionalWorkers(restaurant.workers)}
+    <View>
+      <TextInput
+        style={styles.searchInput}
+        onChangeText={handleSearch}
+        value={searchTerm}
+        placeholder="Buscar..."
+      />
+      <ScrollView>
+        {filteredData.map((restaurant) => (
+          <TouchableOpacity key={restaurant.id} onPress={() => navigation.navigate("Restaurant", { id: restaurant.id })}>
+            <View style={styles.itemContainer}>
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>{restaurant.nom}</Text>
+                <Text style={styles.description}>{restaurant.direccio}</Text>
+                <View style={styles.workersContainer}>
+                  {restaurant.workers.slice(0, 2).map((worker) => (
+                    <View key={worker.id} style={styles.workerItem}>
+                      <Image style={styles.workerImage} source={{ uri: worker.image }} />
+                      <Text style={styles.workerName}>{worker.nom}</Text>
+                    </View>
+                  ))}
+                  {restaurant.workers.length > 2 && renderAdditionalWorkers(restaurant.workers)}
+                </View>
               </View>
+              <Image style={styles.image} source={{ uri: restaurant.foto[0] }} />
             </View>
-            <Image style={styles.image} source={{ uri: restaurant.foto[0] }} />
-          </View>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  searchInput: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    marginBottom: 10,
+  },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -49,13 +76,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
-    width: "100%", // Ocupa toda la anchura
+    width: "100%",
     minHeight: 200,
     maxHeight: "auto",
   },
   image: {
     width: 115,
-    height: 115, // Ajusta la altura según tus necesidades
+    height: 115,
     resizeMode: "cover",
     marginLeft: 10,
     borderRadius: 10,
@@ -106,8 +133,8 @@ const styles = StyleSheet.create({
   },
   additionalWorkersText: {
     fontSize: 13,
-    color: "#FF5722", // Color naranja
-    fontWeight: "bold", // Texto en negrita
+    color: "#FF5722",
+    fontWeight: "bold",
   },
 });
 
