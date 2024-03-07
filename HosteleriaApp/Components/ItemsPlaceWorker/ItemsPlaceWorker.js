@@ -1,16 +1,26 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, TouchableOpacity, ScrollView,View } from "react-native";
+import { Text, StyleSheet, TouchableOpacity, ScrollView, View } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 const ItemPlaceWorker = ({ responsabilitat, restaurantName }) => {
- 
+  const navigation = useNavigation();
+  const [isPressed, setIsPressed] = useState(false);
 
   return (
     <ScrollView style={styles.scrollView}>
-      <View style={styles.itemContainer}>
+      <TouchableOpacity
+        onPressIn={() => setIsPressed(true)}
+        onPressOut={() => setIsPressed(false)}
+        onPress={() => navigation.goBack()}  // Navega hacia atrás cuando se presiona
+        style={[
+          styles.itemContainer,
+          isPressed && styles.itemPressed,  // Cambia el estilo cuando se presiona
+        ]}
+      >
         <Text style={styles.itemText}>
-         {responsabilitat} - {restaurantName}
+          {responsabilitat} - {restaurantName}
         </Text>
-      </View>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -32,7 +42,7 @@ const styles = StyleSheet.create({
     borderColor: "black",
   },
   itemPressed: {
-    backgroundColor: "black",
+    backgroundColor: "black",  // Estilo para cuando se presiona el elemento
   },
   itemText: {
     fontSize: 20,
