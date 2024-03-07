@@ -18,6 +18,7 @@ import { auth, db } from "../FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { FontAwesome } from "@expo/vector-icons";
 import { updateDoc } from "firebase/firestore";
+import { Picker } from "@react-native-picker/picker";
 
 const Profile = () => {
   //funcion para manejar el cierre de sesión
@@ -83,11 +84,24 @@ const Profile = () => {
           screen="Login"
         />
         <ScrollView>
-          <Text>Necesitas iniciar sesión para acceder a esta página.</Text>
-          <Button
-            title="Iniciar sesión"
+          <View style={[styles.userInfo, { paddingBottom: 50 }]}>
+            <Text style={styles.titleEdition}>
+              Necessites iniciar sessió per accedir a aquesta pàgina.
+            </Text>
+            <Image
+              source={require("../../assets/logo.png")}
+              style={styles.profileImage}
+            />
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.boton,
+              { backgroundColor: "#444", marginHorizontal: 130 },
+            ]}
             onPress={() => navigation.navigate("Login")}
-          />
+          >
+            <Text style={styles.botonText}>Inicia sessió</Text>
+          </TouchableOpacity>
         </ScrollView>
         <FooterNavbar
           setActiveContent={activeContent}
@@ -107,7 +121,9 @@ const Profile = () => {
         screen="Login"
       />
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Benvingut al vostre perfil d'usuari</Text>
+        <Text style={editMode ? styles.titleEdition : styles.title}>
+          Benvingut al vostre perfil d'usuari
+        </Text>
         <View style={styles.userInfo}>
           {userData && userData.imageUrl && (
             <Image
@@ -146,18 +162,32 @@ const Profile = () => {
             )}
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.label}>Estat acadèmic:</Text>
+            <Text style={editMode ? styles.labelEstat : styles.label}>
+              Estat acadèmic:
+            </Text>
             {editMode ? (
-              <TextInput
-                style={styles.input}
-                value={userData ? userData.academicStatus : ""}
-                onChangeText={(text) =>
-                  setUserData({ ...userData, academicStatus: text })
+              <Picker
+                selectedValue={userData ? userData.academicStatus : ""}
+                style={styles.picker}
+                onValueChange={(itemValue, itemIndex) =>
+                  setUserData({ ...userData, academicStatus: itemValue })
                 }
-              />
+              >
+                <Picker.Item
+                  label="Alumn"
+                  value="Alumn"
+                  onPress={handleSave}
+                  color="#0A16D6"
+                />
+                <Picker.Item
+                  label="Ex-alumn"
+                  value="Ex-alumn"
+                  onPress={handleSave}
+                  color="#0A16D6"
+                />
+              </Picker>
             ) : (
               <Text style={styles.value}>
-                {" "}
                 {userData ? userData.academicStatus : ""}
               </Text>
             )}
@@ -168,7 +198,7 @@ const Profile = () => {
           <FontAwesome
             name="pencil-square"
             size={25}
-            color={"#173999"}
+            color={"#0A16D6"}
             onPress={() => setEditMode(!editMode)}
           />
         </View>
@@ -193,6 +223,10 @@ const Profile = () => {
 };
 
 const styles = StyleSheet.create({
+  picker: {
+    width: "50%",
+    marginTop: -90,
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -211,11 +245,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
-    margin: 40,
+    margin: 50,
     textAlign: "center",
     marginTop: -55,
+  },
+  titleEdition: {
+    fontSize: 20,
+    fontWeight: "bold",
+    margin: 50,
+    textAlign: "center",
+    marginTop: 50,
   },
   value: {
     fontSize: 18,
@@ -236,11 +277,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 18,
   },
+  labelEstat: {
+    fontWeight: "bold",
+    fontSize: 18,
+    marginTop: -90,
+  },
   input: {
     borderBottomWidth: 1,
     flex: 1,
     marginLeft: 10,
-    color: "#173999",
+    color: "#0A16D6",
     fontSize: 20,
   },
   profileImage: {
