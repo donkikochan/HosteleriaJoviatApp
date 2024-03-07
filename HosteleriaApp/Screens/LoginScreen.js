@@ -38,6 +38,9 @@ const LoginScreen = ({ navigation }) => {
       />
       <View style={styles.rect}>
         <View style={styles.group}>
+          <View style={styles.rect2}>
+            <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
+          </View>
           <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
           <View style={styles.inputBox}>
             <Ionicons name="mail" size={25} color="black" />
@@ -63,12 +66,11 @@ const LoginScreen = ({ navigation }) => {
           </View>
           <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Enviar</Text>
+            <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+              Enviar
+            </Text>
           </TouchableOpacity>
         </View>
-      </View>
-      <View style={styles.rect2}>
-        <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
       </View>
     </View>
   );
@@ -83,7 +85,9 @@ const styles = StyleSheet.create({
   rect: {
     width: "90%",
     height: 300,
-    backgroundColor: "rgba(154,154,154,1)",
+    borderColor: "#000000",
+    backgroundColor: "#E6E6E6",
+    borderRadius: 9,
     marginTop: -150,
     justifyContent: "center",
   },
@@ -103,6 +107,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "#000000",
     marginLeft: 8,
+    borderRadius: 5,
+    padding: 9,
   },
   contrasenya: {
     color: "#121212",
@@ -120,6 +126,8 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "#000000",
     marginLeft: 8,
+    borderRadius: 5,
+    padding: 9,
   },
   loremIpsum: {
     color: "rgba(60,106,148,1)",
@@ -132,7 +140,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 38,
     backgroundColor: "rgba(0,0,0,1)",
-    marginTop: -364,
+    marginTop: 0,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -143,18 +151,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   button: {
-    top: 11,
-    left: 0,
-    width: 115,
-    height: 45,
-    backgroundColor: "rgba(237,240,243,1)",
-    borderWidth: 0,
-    borderColor: "#000000",
-    borderRadius: 9,
-    justifyContent: "center",
+    marginTop: 25,
+    backgroundColor: "#444",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
     alignItems: "center",
-    marginLeft: 105,
-    marginTop: 5,
+    marginHorizontal: 100,
   },
   group: {
     justifyContent: "center",
