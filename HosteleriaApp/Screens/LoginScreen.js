@@ -16,6 +16,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSecured, setSecured] = useState(true);
 
   const handleLogin = async () => {
     try {
@@ -27,6 +28,10 @@ const LoginScreen = ({ navigation }) => {
       console.error("Error en el inicio de sesion: ", error.message);
     }
   };
+
+  const handlePass = () => {
+    setSecured(!isSecured);
+  }
 
   return (
       <View style={styles.container}>
@@ -55,10 +60,12 @@ const LoginScreen = ({ navigation }) => {
             </View>
             <Text style={styles.contrasenya}>CONTRASENYA:</Text>
             <View style={styles.inputBox}>
-              <Ionicons name="lock-open" size={25} color="black" />
+              <TouchableOpacity onPress={handlePass}>
+                <Ionicons name={isSecured ? "eye" : "eye-off"} size={25} color="black" />
+              </TouchableOpacity>
               <TextInput
                   placeholder="Contrasenya"
-                  secureTextEntry={true}
+                  secureTextEntry={isSecured}
                   maxLength={30}
                   style={styles.contrasenya2}
                   value={password}
