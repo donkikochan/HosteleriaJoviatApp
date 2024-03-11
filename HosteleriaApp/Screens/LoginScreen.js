@@ -27,60 +27,59 @@ const LoginScreen = ({ navigation }) => {
       console.error("Error en el inicio de sesion: ", error.message);
     }
   };
+
   return (
-    <View style={styles.container}>
-      <Navbar
-        showGoBack={false}
-        showLogIn={true}
-        showSearch={false}
-        text="Home"
-        screen="Home"
-      />
-      <View style={styles.rect}>
-        <View style={styles.group}>
-          <View style={styles.rect2}>
-            <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
+      <View style={styles.container}>
+        <Navbar
+            showGoBack={false}
+            showLogIn={true}
+            showSearch={false}
+            text="Home"
+            screen="Home"
+        />
+        <View style={styles.rect}>
+          <View style={styles.group}>
+            <View style={styles.rect2}>
+              <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
+            </View>
+            <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
+            <View style={styles.inputBox}>
+              <Ionicons name="mail" size={25} color="black" />
+              <TextInput
+                  placeholder="Correu Electrónic"
+                  maxLength={30}
+                  style={styles.placeholder}
+                  value={email}
+                  onChangeText={setEmail}
+              ></TextInput>
+            </View>
+            <Text style={styles.contrasenya}>CONTRASENYA:</Text>
+            <View style={styles.inputBox}>
+              <Ionicons name="lock-open" size={25} color="black" />
+              <TextInput
+                  placeholder="Contrasenya"
+                  secureTextEntry={true}
+                  maxLength={30}
+                  style={styles.contrasenya2}
+                  value={password}
+                  onChangeText={setPassword}
+              ></TextInput>
+            </View>
+            <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+                Enviar
+              </Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
-          <View style={styles.inputBox}>
-            <Ionicons name="mail" size={25} color="black" />
-            <TextInput
-              placeholder="Correu Electrónic"
-              maxLength={30}
-              style={styles.placeholder}
-              value={email}
-              onChangeText={setEmail}
-            ></TextInput>
-          </View>
-          <Text style={styles.contrasenya}>CONTRASENYA:</Text>
-          <View style={styles.inputBox}>
-            <Ionicons name="lock-open" size={25} color="black" />
-            <TextInput
-              placeholder="Contrasenya"
-              secureTextEntry={true}
-              maxLength={30}
-              style={styles.contrasenya2}
-              value={password}
-              onChangeText={setPassword}
-            ></TextInput>
-          </View>
-          <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-              Enviar
-            </Text>
-          </TouchableOpacity>
         </View>
       </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   rect: {
     width: "90%",
@@ -88,8 +87,9 @@ const styles = StyleSheet.create({
     borderColor: "#000000",
     backgroundColor: "#E6E6E6",
     borderRadius: 9,
-    marginTop: -150,
+    marginTop: 180,
     justifyContent: "center",
+    alignSelf: "center"
   },
   correuElectronic: {
     color: "#121212",
@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
     borderColor: "#000000",
     marginLeft: 8,
     borderRadius: 5,
-    padding: 9,
   },
   contrasenya: {
     color: "#121212",
@@ -127,7 +126,6 @@ const styles = StyleSheet.create({
     borderColor: "#000000",
     marginLeft: 8,
     borderRadius: 5,
-    padding: 9,
   },
   loremIpsum: {
     color: "rgba(60,106,148,1)",
