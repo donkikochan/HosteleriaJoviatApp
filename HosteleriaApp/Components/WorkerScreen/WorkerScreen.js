@@ -6,8 +6,11 @@ import WorkerInfoCard from "../WorkerInfoCard/WorkerInfoCard";
 import ItemPlaceWorker from '../ItemsPlaceWorker/ItemsPlaceWorker';
 import { db } from "../FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import { useNavigation } from '@react-navigation/native';
 
 const WorkerScreen = ({ route }) => {
+  const [activeContent, setActiveContent] = useState(null);
+    const navigation = useNavigation();
   const [workerData, setWorkerData] = useState(null);
   const { workerId, restaurantId, restaurantName } = route.params;
   const screenHeight = Dimensions.get('window').height;
@@ -54,7 +57,7 @@ const WorkerScreen = ({ route }) => {
       </ScrollView>
       </View>
 
-      <FooterNavbar />
+      <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
     </View>
   );
 };
