@@ -29,8 +29,11 @@ function JoviatScreen() {
       <View style={styles.group}>
         <CarouselDef
           fotos={[
+            "https://www.joviat.com/wp-content/uploads/Joviat-Hoteleria/grau_mitja_cuina_gastronomia_serveis_restauracio_7.jpg",
+            "https://www.joviat.com/wp-content/uploads/Joviat-Hoteleria/hostal-espai-gastronomic-joviat-restaurant42.jpg",
+            "https://www.joviat.com/wp-content/uploads/Joviat-Hoteleria/restaurant-hoteleria-joviat.jpg",
+            "https://www.ghtbages.org/includes/cache/_CACHE-6ec2f116f8f605bae3fa75234d33990f_1200x0.jpeg",
             "https://media-cdn.tripadvisor.com/media/photo-o/0e/bc/c0/28/escola-joviat.jpg",
-            "https://media-cdn.tripadvisor.com/media/photo-o/1a/a3/f0/29/photo3jpg.jpg",
           ]}
         />
       </View>
