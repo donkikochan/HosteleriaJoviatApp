@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { useNavigation } from "@react-navigation/native"; // Importar useNavigation desde React Navigation
-import Navbar from "../Navbar/Navbar";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import FooterNavbar from "../FooterNavbar/FooterNavbar";
+import Navbar from "../Navbar/Navbar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ListViewComponent from "../MainScreen/ListView";
+import MapViewComponent from "../MainScreen/MapView";
 
 function FavRestScreen() {
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeContent, setActiveContent] = useState("");
+  const [activeContent, setActiveContent] = useState("Favorite");
   const navigation = useNavigation(); // Obtener el objeto de navegación utilizando useNavigation
 
   useEffect(() => {
@@ -50,8 +58,8 @@ function FavRestScreen() {
   return (
     <View style={styles.container}>
       <Navbar
-        showGoBack={false}
-        showLogIn={true}
+        showGoBack={true}
+        showLogIn={false}
         showSearch={true}
         text="Login"
         screen="Login"
@@ -60,7 +68,7 @@ function FavRestScreen() {
       <ScrollView style={styles.contentContainer}>
         <ListViewComponent data={filteredRestaurants} />
       </ScrollView>
-      <FooterNavbar setActiveContent={setActiveContent} navigation={navigation} />
+      <FooterNavbar setActiveContent={activeContent} navigation={navigation} />
     </View>
   );
 }

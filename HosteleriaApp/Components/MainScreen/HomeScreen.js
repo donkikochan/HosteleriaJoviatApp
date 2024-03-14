@@ -122,7 +122,7 @@ function HomeScreen() {
         <SwitchBar isMapView={isMapView} onToggleView={toggleView} />
         <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
       </View>
-      <FooterNavbar setActiveContent={setActiveContent} navigation={navigation}/>
+      <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
     </View>
   );
 }

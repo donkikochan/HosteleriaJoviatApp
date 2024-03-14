@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -10,63 +10,93 @@ import {
 import RestaurantInfoCard from "../Components/RestaurantInfoCard/RestaurantInfoCard";
 import Navbar from "../Components/Navbar/Navbar";
 import { Ionicons } from "@expo/vector-icons";
+import { auth } from "../Components/FirebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSecured, setSecured] = useState(true);
+
+  const handleLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("Usuario logueado con exito");
+      //Navegar al homescreen
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Error en el inicio de sesion: ", error.message);
+    }
+  };
+
+  const handlePass = () => {
+    setSecured(!isSecured);
+  }
+
   return (
-    <View style={styles.container}>
-      <Navbar
-        showGoBack={false}
-        showLogIn={true}
-        showSearch={false}
-        text="Home"
-        screen="Home"
-      />
-      <View style={styles.rect}>
-        <View style={styles.group}>
-          <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
-          <View style={styles.inputBox}>
-            <Ionicons name="mail" size={25} color="black" />
-            <TextInput
-              placeholder=""
-              maxLength={30}
-              style={styles.placeholder}
-            ></TextInput>
+      <View style={styles.container}>
+        <Navbar
+            showGoBack={false}
+            showLogIn={true}
+            showSearch={false}
+            text="Home"
+            screen="Home"
+        />
+        <View style={styles.rect}>
+          <View style={styles.group}>
+            <View style={styles.rect2}>
+              <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
+            </View>
+            <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
+            <View style={styles.inputBox}>
+              <Ionicons name="mail" size={25} color="black" />
+              <TextInput
+                  placeholder="Correu Electrónic"
+                  maxLength={30}
+                  style={styles.placeholder}
+                  value={email}
+                  onChangeText={setEmail}
+              ></TextInput>
+            </View>
+            <Text style={styles.contrasenya}>CONTRASENYA:</Text>
+            <View style={styles.inputBox}>
+              <TouchableOpacity onPress={handlePass}>
+                <Ionicons name={isSecured ? "eye-off" : "eye"} size={25} color="black" />
+              </TouchableOpacity>
+              <TextInput
+                  placeholder="Contrasenya"
+                  secureTextEntry={isSecured}
+                  maxLength={30}
+                  style={styles.contrasenya2}
+                  value={password}
+                  onChangeText={setPassword}
+              ></TextInput>
+            </View>
+            <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+                Enviar
+              </Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.contrasenya}>CONTRASENYA:</Text>
-          <View style={styles.inputBox}>
-            <Ionicons name="lock-open" size={25} color="black" />
-            <TextInput
-              placeholder=""
-              secureTextEntry={true}
-              maxLength={30}
-              style={styles.contrasenya2}
-            ></TextInput>
-          </View>
-          <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
-          <TouchableOpacity style={styles.button}>
-            <Text style={{ fontSize: 18, fontWeight: "bold" }}>Enviar</Text>
-          </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.rect2}>
-        <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
-      </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   rect: {
     width: "90%",
     height: 300,
-    backgroundColor: "rgba(154,154,154,1)",
-    marginTop: -150,
+    borderColor: "#000000",
+    backgroundColor: "#E6E6E6",
+    borderRadius: 9,
+    marginTop: 180,
     justifyContent: "center",
+    alignSelf: "center"
   },
   correuElectronic: {
     color: "#121212",
@@ -84,6 +114,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "#000000",
     marginLeft: 8,
+    borderRadius: 5,
   },
   contrasenya: {
     color: "#121212",
@@ -101,6 +132,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: "#000000",
     marginLeft: 8,
+    borderRadius: 5,
   },
   loremIpsum: {
     color: "rgba(60,106,148,1)",
@@ -113,7 +145,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 38,
     backgroundColor: "rgba(0,0,0,1)",
-    marginTop: -364,
+    marginTop: 0,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -124,18 +156,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   button: {
-    top: 11,
-    left: 0,
-    width: 115,
-    height: 45,
-    backgroundColor: "rgba(237,240,243,1)",
-    borderWidth: 0,
-    borderColor: "#000000",
-    borderRadius: 9,
-    justifyContent: "center",
+    marginTop: 25,
+    backgroundColor: "#444",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
     alignItems: "center",
-    marginLeft: 105,
-    marginTop: 5,
+    marginHorizontal: 100,
   },
   group: {
     justifyContent: "center",
