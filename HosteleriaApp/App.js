@@ -10,11 +10,12 @@ import { AuthProvider } from "./AuthContext";
 import JoviatScreen from "./Components/JoviatScreen/JoviatScreen";
 
 const Stack = createStackNavigator();
+
 export default function App() {
     return (
         <AuthProvider>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Home">
+                <Stack.Navigator initialRouteName="Home" screenOptions={{ animationEnabled: false }}>
                     <Stack.Screen
                         name="Home"
                         component={HomeScreen}
@@ -25,7 +26,6 @@ export default function App() {
                         component={LoginScreen}
                         options={{ headerShown: false }}
                     />
-
                     <Stack.Screen
                         name="Restaurant"
                         component={RestaurantScreen}
@@ -49,7 +49,7 @@ export default function App() {
                     <Stack.Screen
                         name="Joviat"
                         component={JoviatScreen}
-                        options={{headerShown: false}}
+                        options={{ headerShown: false }}
                     />
                 </Stack.Navigator>
             </NavigationContainer>
