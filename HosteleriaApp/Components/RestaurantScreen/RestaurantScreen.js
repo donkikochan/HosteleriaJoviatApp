@@ -5,11 +5,12 @@ import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import CarouselDef from "../Carousel/CaroselDef";
 import Items from "../ChefList/ItemsChef";
 import RestaurantInfoCard from "../RestaurantInfoCard/RestaurantInfoCard";
-import {db} from "../FirebaseConfig";
-import {doc, getDoc, collection, getDocs} from "firebase/firestore";
+import { db } from "../FirebaseConfig";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import {Ionicons} from "@expo/vector-icons";
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 function RestaurantScreen({route}) {
     const [restaurantData, setRestaurantData] = useState(null);
@@ -62,6 +63,7 @@ function RestaurantScreen({route}) {
         if (id) {
             fetchRestaurantData();
         }
+      
         // Recuperar el estado del favorito al montar el componente
         const retrieveFavoriteStatus = async () => {
             try {
@@ -84,15 +86,20 @@ function RestaurantScreen({route}) {
     }
     const longitud = restaurantData.longitud;
     const latitud = restaurantData.latitud;
+  
+  const navigateToWorkerScreen = (worker) => {
+    navigation.navigate('WorkerScreen', { 
+        workerId: worker.id, 
+        restaurantId: id,
+        restaurantName: restaurantData.nom, 
+        responsabilitat: worker.responsabilitat
+    });
+  };
 
-    const saveToFavorites = async () => {
+
+  const saveToFavorites = async () => {
         try {
-            let workersToSave = [...workersData]; // Hacemos una copia de los datos de los trabajadores
-            if (workersToSave.length > 3) {
-                // Si hay más de 3 trabajadores, conservamos solo los primeros 3
-                workersToSave = workersToSave.slice(0, 3);
-            }
-            const restaurantWithWorkers = { ...restaurantData, workers: workersToSave };
+            const restaurantWithWorkers = { ...restaurantData, workers: workersData };
             // Guardar el restaurante en AsyncStorage
             await AsyncStorage.setItem(`restaurant_${restaurantData.id}`, JSON.stringify(restaurantWithWorkers));
         } catch (error) {
@@ -146,15 +153,14 @@ function RestaurantScreen({route}) {
                 />
                 {workersData.map((worker, index) => (
                     <Items
-                        key={index}
-                        name={worker.nom}
-                        foto={worker.image}
-                        position={worker.responsabilitat}
-                        isLast={index === workersData.length - 1}
+                    key={worker.id}
+                    worker={worker}
+                    onPress={() => navigateToWorkerScreen(worker)}
+                    navigation={navigation}
                     />
                 ))}
             </ScrollView>
-            <FooterNavbar setActiveContent={setActiveContent} navigation={navigation}/>
+            <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
         </View>
     );
 }
