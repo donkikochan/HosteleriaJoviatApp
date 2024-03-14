@@ -1,9 +1,15 @@
+// SearchBar.js
 import React from "react";
 import { Dimensions } from "react-native";
 import { View, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const SearchBar = () => {
+const SearchBar = ({ handleSearch }) => {
+  const onChangeText = (text) => {
+    console.log("TEST1: ", text);
+    handleSearch(text);
+  };
+
   return (
     <View style={styles.searchSection}>
       <Ionicons
@@ -12,7 +18,11 @@ const SearchBar = () => {
         size={18}
         color="grey"
       />
-      <TextInput style={styles.searchInput} clearButtonMode="while-editing" />
+      <TextInput
+        style={styles.searchInput}
+        onChangeText={onChangeText}
+        clearButtonMode="while-editing"
+      />
     </View>
   );
 };
