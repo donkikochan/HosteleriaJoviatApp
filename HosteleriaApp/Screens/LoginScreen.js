@@ -61,7 +61,7 @@ const LoginScreen = ({ navigation }) => {
             <Text style={styles.contrasenya}>CONTRASENYA:</Text>
             <View style={styles.inputBox}>
               <TouchableOpacity onPress={handlePass}>
-                <Ionicons name={isSecured ? "eye" : "eye-off"} size={25} color="black" />
+                <Ionicons name={isSecured ? "eye-off" : "eye"} size={25} color="black" />
               </TouchableOpacity>
               <TextInput
                   placeholder="Contrasenya"
