@@ -12,7 +12,6 @@ import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import Navbar from "../Navbar/Navbar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ListViewComponent from "../MainScreen/ListView";
-import MapViewComponent from "../MainScreen/MapView";
 
 function FavRestScreen() {
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
