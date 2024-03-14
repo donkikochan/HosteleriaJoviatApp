@@ -16,7 +16,7 @@ const Navbar = (props) => {
                     <Text style={styles.text}>{props.text}</Text>
                 </TouchableOpacity>
             )}
-            {props.showSearch && <SearchBar/>}
+            {props.showSearch && <SearchBar handleSearch= {props.handleSearch} />}
             <TouchableOpacity>
                 <Image
                     source={require("../../assets/logo.png")}

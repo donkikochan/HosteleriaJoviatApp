@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, TextInput } from "react-native";
+import SearchBar from "../Navbar/SearchBar";
 
 const ListViewComponent = ({ data, navigation }) => {
-  const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = (text) => {
-    setSearchTerm(text);
-  };
 
   const renderAdditionalWorkers = (workers) => {
     return (
@@ -21,22 +18,11 @@ const ListViewComponent = ({ data, navigation }) => {
     );
   };
 
-  const filteredData = data.filter((restaurant) => {
-    const restaurantNameMatch = restaurant.nom.toLowerCase().includes(searchTerm.toLowerCase());
-    const workerNameMatch = restaurant.workers.some((worker) => worker.nom.toLowerCase().includes(searchTerm.toLowerCase()));
-    return restaurantNameMatch || workerNameMatch;
-  });
 
   return (
     <View>
-      <TextInput
-        style={styles.searchInput}
-        onChangeText={handleSearch}
-        value={searchTerm}
-        placeholder="Buscar..."
-      />
       <ScrollView>
-        {filteredData.map((restaurant) => (
+        {data.map((restaurant) => (
           <TouchableOpacity key={restaurant.id} onPress={() => navigation.navigate("Restaurant", { id: restaurant.id })}>
             <View style={styles.itemContainer}>
               <View style={styles.textContainer}>
