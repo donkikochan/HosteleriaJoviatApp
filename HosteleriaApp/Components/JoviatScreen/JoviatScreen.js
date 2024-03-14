@@ -83,7 +83,7 @@ function JoviatScreen() {
           showLinkedin={false}
           showMail={true}
           showPhone={false}
-          mail="victoriaeso904@gmail.com"
+          mail="vscribelka@gmail.com"
         />
         <ItemDev
           name="María José Issa"
