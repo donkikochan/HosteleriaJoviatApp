@@ -65,7 +65,7 @@ function FavRestScreen() {
         handleSearch={handleSearch}
       />
       <ScrollView style={styles.contentContainer}>
-        <ListViewComponent data={filteredRestaurants} />
+        <ListViewComponent data={filteredRestaurants} navigation={navigation} />
       </ScrollView>
       <FooterNavbar setActiveContent={activeContent} navigation={navigation} />
     </View>
