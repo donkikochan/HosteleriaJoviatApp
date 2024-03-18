@@ -5,7 +5,6 @@ import markerJoviat from "./pin_joviat.png";
 import { useNavigation } from "@react-navigation/native";
 import { db } from "../FirebaseConfig";
 import { QuerySnapshot, collection, getDocs } from "firebase/firestore";
-import JoviatScreen from "../JoviatScreen/JoviatScreen";
 
 const MapViewComponent = () => {
     const mapRef = useRef(null);

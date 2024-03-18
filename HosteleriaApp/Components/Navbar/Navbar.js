@@ -5,7 +5,6 @@ import {Image} from "react-native";
 import SearchBar from "./SearchBar";
 import GoBackArrow from "./GoBackArrow";
 import {useNavigation} from "@react-navigation/native";
-import JoviatScreen from "../JoviatScreen/JoviatScreen";
 
 const Navbar = (props) => {
     const navigation = useNavigation();
