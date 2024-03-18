@@ -39,8 +39,8 @@ function JoviatScreen() {
       </View>
       <ScrollView style={{ zIndex: -2 }}>
         <RestaurantInfoCard
-          titol="Escola Joviat"
-          descripcio="L’equip de metodologia d’Hoteleria ha dissenyat la transformació de l’Escola cap a un centre de Gastronomia on l’alumnat reflexiona sobre el coneixement i no sobre la norma. Cerca, es fa preguntes, observa, es relaciona, crea i comunica. Un centre connectat al territori i al producte (Slow Food), a les persones i a la cultura, a la tradició i a l’evolució. Un centre des d’on crear una xarxa de coneixement que parteix del Bages i arriba al món."
+          titol="Restaurant Joviat"
+          descripcio="Restaurant per a degustar la cuina de l'Escola d'Hoteleria de la Joviat. Els seus clients podran gaudir d'un buffet amb els plats elaborats diàriament pels joves alumnes."
           web="https://www.joviat.com/joviat-hoteleria/restaurant-pedagogic-hostal-espai-gastronomic/"
           tel="938723383"
           ubicacion="https://maps.app.goo.gl/yFE6WtoDNzQnmCP98"

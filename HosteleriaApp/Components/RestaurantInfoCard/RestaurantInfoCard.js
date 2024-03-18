@@ -31,44 +31,44 @@ function RestaurantInfoCard({ titol, descripcio, web, tel, ubicacion }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.group2}>
-        <View style={styles.group}>
-          <View style={styles.group4}>
-            <Text style={styles.nomRestaurant}>{titol}</Text>
-            <View style={styles.descripcioRestaurantRow}>
-              <Text style={styles.descripcioRestaurant}>{descripcio}</Text>
+      <View style={styles.container}>
+        <View style={styles.group2}>
+          <View style={styles.group}>
+            <View style={styles.group4}>
+              <Text style={styles.nomRestaurant}>{titol}</Text>
+              <View style={styles.descripcioRestaurantRow}>
+                <Text style={styles.descripcioRestaurant}>{descripcio}</Text>
+              </View>
             </View>
           </View>
         </View>
+        <View style={styles.botonesContainer}>
+          {/* Botón Web */}
+          <TouchableOpacity
+              style={[
+                styles.boton,
+                { backgroundColor: "#444", marginRight: 5, marginLeft: 10 },
+              ]}
+              onPress={openWebLink}
+          >
+            <Text style={styles.botonText}>Web</Text>
+          </TouchableOpacity>
+          {/* Botón Teléfono */}
+          <TouchableOpacity
+              style={[styles.boton, { backgroundColor: "#444", marginLeft: 5 }]}
+              onPress={openTelefonoLink}
+          >
+            <Text style={styles.botonText}>Teléfono</Text>
+          </TouchableOpacity>
+          {/* Botón Ubicación */}
+          <TouchableOpacity
+              style={[styles.boton, { backgroundColor: "#444", marginLeft: 5 }]}
+              onPress={openUbicacionLink}
+          >
+            <Text style={styles.botonText}>Ubicación</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.botonesContainer}>
-        {/* Botón Web */}
-        <TouchableOpacity
-          style={[
-            styles.boton,
-            { backgroundColor: "#444", marginRight: 5, marginLeft: 10 },
-          ]}
-          onPress={openWebLink}
-        >
-          <Text style={styles.botonText}>Web</Text>
-        </TouchableOpacity>
-        {/* Botón Teléfono */}
-        <TouchableOpacity
-          style={[styles.boton, { backgroundColor: "#444", marginLeft: 5 }]}
-          onPress={openTelefonoLink}
-        >
-          <Text style={styles.botonText}>Teléfono</Text>
-        </TouchableOpacity>
-        {/* Botón Ubicación */}
-        <TouchableOpacity
-          style={[styles.boton, { backgroundColor: "#444", marginLeft: 5 }]}
-          onPress={openUbicacionLink}
-        >
-          <Text style={styles.botonText}>Ubicación</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
   );
 }
 
@@ -99,13 +99,13 @@ const styles = StyleSheet.create({
     width: 248,
     alignSelf: "center",
     paddingTop: 10,
+    alignItems: "center",
   },
   nomRestaurant: {
     color: "rgba(0,0,0,1)",
     fontSize: 20,
     textAlign: "center",
     width: 224,
-    textAlign: "center",
     fontWeight: "bold",
   },
   descripcioRestaurant: {
