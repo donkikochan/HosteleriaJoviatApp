@@ -17,17 +17,17 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSecured, setSecured] = useState(true);
-  const [loginResult, setLoginResult] = useState(true);
+  const [loginResult, setLoginResult] = useState(null);
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email.trim(), password.trim());
       console.log("Usuario logueado con exito");
       setLoginResult(true);
       //Navegar al homescreen
       navigation.navigate("Home");
     } catch (error) {
-      console.error("Error en el inicio de sesion: ", error.message);
+      //console.error("Error en el inicio de sesion: ", error.message);
       setLoginResult(false);
     }
   };
@@ -50,8 +50,11 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.rect2}>
               <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
             </View>
-            {!loginResult && (
+            {loginResult === false && (
                 <Text style={styles.loginError}>No s'ha trobat aquest usuari. Revisa les credencials.</Text>
+            )}
+            {loginResult === true && (
+                <Text style={styles.loginValid}>Estàs loguejat.</Text>
             )}
             <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
             <View style={styles.inputBox}>
@@ -62,6 +65,7 @@ const LoginScreen = ({ navigation }) => {
                   style={styles.placeholder}
                   value={email}
                   onChangeText={setEmail}
+                  autoCapitalize="none"
               ></TextInput>
             </View>
             <Text style={styles.contrasenya}>CONTRASENYA:</Text>
@@ -76,9 +80,12 @@ const LoginScreen = ({ navigation }) => {
                   style={styles.contrasenya2}
                   value={password}
                   onChangeText={setPassword}
+                  autoCapitalize="none"
               ></TextInput>
             </View>
-            <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
+            <TouchableOpacity>
+              <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
                 Enviar
@@ -183,6 +190,15 @@ const styles = StyleSheet.create({
   },
   loginError: {
     color: "red",
+    fontSize: 14,
+    top: 25,
+    position: "absolute",
+  },
+  loginValid: {
+    color: "green",
+    fontSize: 14,
+    top: 25,
+    position: "absolute",
   },
 });
 
