@@ -11,6 +11,12 @@ const MapViewComponent = () => {
     const mapRef = useRef(null);
     const [restaurants, setRestaurants] = useState([]);
     const navigation = useNavigation();
+    const [restaurantsReady, setRestaurantsReady] = useState(false);
+    const [mapLayoutReady, setMapLayoutReady] = useState(false);
+
+    const handleMapLayout = () => {
+        setMapLayoutReady(true);
+    };
 
     useEffect(() => {
         console.log("Fetching restaurants data...");
@@ -21,16 +27,18 @@ const MapViewComponent = () => {
                     id: doc.id,
                     ...doc.data(),
                 }));
-                //console.log("Fetched restaurants data:", restaurantsData);
                 setRestaurants(restaurantsData);
+                setRestaurantsReady(true);
             } catch (error) {
                 console.error("Error fetching restaurants data:", error);
             }
         };
-
+    
         fetchData();
-
-        if (mapRef.current) {
+    }, []);
+    
+    useEffect(() => {
+        if (mapLayoutReady && mapRef.current && restaurantsReady) {
             setTimeout(() => {
                 mapRef.current.fitToSuppliedMarkers(
                     restaurants.map((r) => r.id),
@@ -41,7 +49,9 @@ const MapViewComponent = () => {
                 );
             }, 1000);
         }
-    }, []);
+    }, [mapLayoutReady, restaurantsReady]);
+    
+    
 
     const handleMarkerPress = (restaurantId) => {
         console.log("Marker pressed. Restaurant ID:", restaurantId);
