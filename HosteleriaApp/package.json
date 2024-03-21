@@ -14,7 +14,6 @@
     "@react-native-community/geolocation": "^3.2.0",
     "@react-native-firebase/firestore": "^18.8.0",
     "@react-native-picker/picker": "^2.6.1",
-    "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@react-navigation/stack": "^6.3.20",
     "deprecated-react-native-prop-types": "^5.0.0",
