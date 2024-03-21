@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Alert } from "react-native";
 import MapViewComponent from "./MapView";
 import ListViewComponent from "./ListView";
 import SwitchBar from "./SwitchBar";
 import Navbar from "../Navbar/Navbar";
 import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import { useNavigation } from "@react-navigation/native";
-import { db } from "../FirebaseConfig";
+import { auth, db } from "../FirebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import { useAuth } from "../../AuthContext";
+import { signOut } from "firebase/auth";
 
 function HomeScreen() {
   const [filteredData, setFilteredData] = useState([]);
@@ -16,6 +18,9 @@ function HomeScreen() {
   const [isMapView, setIsMapView] = useState(false);
   const navigation = useNavigation();
   const [activeContent, setActiveContent] = useState("Home");
+
+  const { currentUser } = useAuth();
+  console.log("current user in homescreen: ", currentUser);
 
   // Función para obtener los datos de los restaurantes
   const fetchRestaurantsData = async () => {
@@ -100,6 +105,38 @@ function HomeScreen() {
     setFilteredData(filteredRestaurants); // Actualizar los datos filtrados
   };
 
+  //funcion para manejar el cierre de sesion
+  const handleLogOut = async () => {
+    console.log("Intentando cerrar sesión");
+    try {
+      await signOut(auth);
+      console.log("Sesión cerrada");
+    } catch (error) {
+      console.error("Error al cerrar sesión", error);
+    }
+  };
+
+  const handleConfirmLogOut = () => {
+    console.log("handleConfirmLogOut llamado");
+    Alert.alert (
+        ' Tancar sessió ' ,
+        'Esteu segur que voleu tanca la sessió?',
+        [
+            {
+                text: "Sí",
+                onPress: () => {handleLogOut()}
+            },
+            {
+                text: "No",
+                style: "cancel"
+            }
+        ],
+        {
+            cancelable: true
+        },
+    )
+};
+
   const renderContent = () => {
     if (isMapView) {
       return <MapViewComponent />;
@@ -110,39 +147,53 @@ function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Navbar
-        showGoBack={false}
-        showLogIn={true}
-        showSearch={true}
-        text="Login"
-        screen="Login"
-        handleSearch={handleSearch}
-      />
+      {currentUser ? (
+        <Navbar
+          showGoBack={false}
+          showLogIn={false}
+          showSearch={true}
+          showLogOut={true}
+          text="Logout"
+          screen="Login"
+          handleSearch={handleSearch}
+          handleLogOut={handleConfirmLogOut}
+        />
+      ) : (
+        <Navbar
+          showGoBack={false}
+          showLogIn={true}
+          showSearch={true}
+          text="Login"
+          screen="Login"
+          handleSearch={handleSearch}
+        />
+      )}
+
       <View style={styles.contentContainer}>
         <SwitchBar isMapView={isMapView} onToggleView={toggleView} />
         <ScrollView style={styles.scrollView}>{renderContent()}</ScrollView>
       </View>
-      <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
+      <FooterNavbar setActiveContent={activeContent} navigation={navigation} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        paddingTop: 120,
-    },
-    contentContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    scrollView: {
-        flex: 1,
-        width: "100%",
-        maxWidth: 600,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingTop: 120,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  scrollView: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 600,
+  },
 });
 
 export default HomeScreen;
