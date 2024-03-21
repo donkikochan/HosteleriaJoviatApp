@@ -20,6 +20,7 @@ import {doc, getDoc} from "firebase/firestore";
 import {FontAwesome} from "@expo/vector-icons";
 import {updateDoc} from "firebase/firestore";
 import {Picker} from "@react-native-picker/picker";
+import * as ImagePicker from 'expo-image-picker';
 
 const Profile = () => {
     //funcion para manejar el cierre de sesión
@@ -39,18 +40,47 @@ const Profile = () => {
     const [activeContent, setContent] = useState("Profile");
     const [userData, setUserData] = useState(null);
     const [editMode, setEditMode] = useState(false);
+    const [image, setImage] = useState(null);
 
     // Función para actualizar los datos del usuario en Firestore
     const handleSave = async () => {
         if (currentUser && userData) {
             const userRef = doc(db, "users", currentUser.uid);
             try {
-                await updateDoc(userRef, userData);
+                // Crear un nuevo objeto con los datos de usuario existentes
+                let updatedUserData = {...userData};
+
+                // Si image no es null, actualizar imageUrl en el objeto
+                if (image) {
+                    updatedUserData.imageUrl = image;
+                }
+
+                // Actualizar el documento del usuario con los nuevos datos
+                await updateDoc(userRef, updatedUserData);
+
+                setUserData(updatedUserData);
+
                 console.log("Perfil actualizado con éxito");
                 setEditMode(false); // Salir del modo de edición
             } catch (error) {
                 console.error("Error al actualizar el perfil: ", error);
             }
+        }
+    };
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
         }
     };
 
@@ -127,10 +157,19 @@ const Profile = () => {
                 </Text>
                 <View style={styles.userInfo}>
                     {userData && userData.imageUrl && (
-                        <Image
-                            source={{uri: userData.imageUrl}}
-                            style={styles.profileImage}
-                        />
+                        editMode ? (
+                            <TouchableOpacity onPress={pickImage}>
+                                <Image
+                                    source={{uri: image || (userData && userData.imageUrl)}}
+                                    style={styles.profileImage}
+                                />
+                            </TouchableOpacity>
+                        ) : (
+                            <Image
+                                source={{uri: userData.imageUrl}}
+                                style={styles.profileImage}
+                            />
+                        )
                     )}
                     <View style={styles.infoContainer}>
                         <Text style={styles.label}>Nom d'usuari:</Text>
