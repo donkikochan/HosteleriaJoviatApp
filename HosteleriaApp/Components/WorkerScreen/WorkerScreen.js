@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Text, Dimensions } from 'react-native';
-import Navbar from '../Navbar/Navbar';
-import FooterNavbar from '../FooterNavbar/FooterNavbar';
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, ScrollView, Text, Dimensions } from "react-native";
+import Navbar from "../Navbar/Navbar";
+import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import WorkerInfoCard from "../WorkerInfoCard/WorkerInfoCard";
-import ItemPlaceWorker from '../ItemsPlaceWorker/ItemsPlaceWorker';
+import ItemPlaceWorker from "../ItemsPlaceWorker/ItemsPlaceWorker";
 import { db } from "../FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../AuthContext";
 
 const WorkerScreen = ({ route }) => {
   const [activeContent, setActiveContent] = useState(null);
-    const navigation = useNavigation();
+  const navigation = useNavigation();
   const [workerData, setWorkerData] = useState(null);
   const { workerId, restaurantId, restaurantName } = route.params;
-  const screenHeight = Dimensions.get('window').height;
+  const screenHeight = Dimensions.get("window").height;
+  //para manejar la informacion que se muestra, dependiendo si el usuario está logueado o no
+  const { currentUser } = useAuth();
+  console.log("el usuario en worker screen es: ", currentUser);
 
   useEffect(() => {
     const fetchWorkerData = async () => {
@@ -41,23 +45,37 @@ const WorkerScreen = ({ route }) => {
   if (!workerData) {
     return <Text>Cargando datos del trabajador...</Text>;
   }
-  
 
-  
   return (
     <View style={styles.container}>
-      <Navbar showGoBack={true} showLogIn={false} showSearch={false} text="Login" />
-      
+      <Navbar
+        showGoBack={true}
+        showLogIn={false}
+        showSearch={false}
+        text="Login"
+      />
+
       <View style={styles.scrollViewContainer}>
-        <WorkerInfoCard {...workerData} />
+        {currentUser ? (
+          <WorkerInfoCard
+            {...workerData}
+            showPhone={true}
+            showInstagram={true}
+          />
+        ) : (
+          <WorkerInfoCard {...workerData} />
+        )}
 
         <Text style={styles.title}>Llocs de treball:</Text>
         <ScrollView style={styles.scrollView}>
-        <ItemPlaceWorker restaurantName={restaurantName} responsabilitat={route.params.responsabilitat}/>
-      </ScrollView>
+          <ItemPlaceWorker
+            restaurantName={restaurantName}
+            responsabilitat={route.params.responsabilitat}
+          />
+        </ScrollView>
       </View>
 
-      <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
+      <FooterNavbar setActiveContent={activeContent} navigation={navigation} />
     </View>
   );
 };
@@ -76,14 +94,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24, // Ajusta el tamaño de la fuente según tus preferencias
-    fontWeight: 'bold', // Negrita
-    textAlign: 'center', // Centrado
+    fontWeight: "bold", // Negrita
+    textAlign: "center", // Centrado
     marginTop: -35, // Ajusta el margen superior según tus necesidades
     marginBottom: 10,
-    backgroundColor: '#fff', // Ejemplo de color de fondo
+    backgroundColor: "#fff", // Ejemplo de color de fondo
     padding: 10,
   },
-  
 });
 
 export default WorkerScreen;
