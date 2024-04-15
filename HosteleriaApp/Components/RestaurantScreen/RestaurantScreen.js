@@ -1,14 +1,14 @@
-import React, {useState, useEffect} from "react";
-import {StyleSheet, View, ScrollView, Text, TouchableOpacity} from "react-native";
+import React, {useEffect, useState} from "react";
+import {ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import Navbar from "../Navbar/Navbar";
 import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import CarouselDef from "../Carousel/CaroselDef";
 import Items from "../ChefList/ItemsChef";
 import RestaurantInfoCard from "../RestaurantInfoCard/RestaurantInfoCard";
-import { db } from "../FirebaseConfig";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import {db} from "../FirebaseConfig";
+import {collection, doc, getDoc, getDocs} from "firebase/firestore";
 import {Ionicons} from "@expo/vector-icons";
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
@@ -16,10 +16,14 @@ function RestaurantScreen({route}) {
     const [restaurantData, setRestaurantData] = useState(null);
     const [workersData, setWorkersData] = useState([]);
     const id = route?.params?.id;
+    const lastVisitedFavorites = route.params?.lastVisitedFavorites;
     const [activeContent, setActiveContent] = useState(null);
     const navigation = useNavigation();
     const [heartColor, setHeartColor] = useState("white");
     const [isFavorite, setIsFavorite] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    const [favValue, setFavValue] = useState(false);
 
     useEffect(() => {
         const fetchRestaurantData = async () => {
@@ -35,6 +39,9 @@ function RestaurantScreen({route}) {
                 }
             } catch (error) {
                 console.error("Error al obtener los datos del restaurante", error);
+            } finally {
+                setLoading(false); // Marcar la carga como completada
+                setDataLoaded(true);
             }
         };
 
@@ -63,7 +70,7 @@ function RestaurantScreen({route}) {
         if (id) {
             fetchRestaurantData();
         }
-      
+
         // Recuperar el estado del favorito al montar el componente
         const retrieveFavoriteStatus = async () => {
             try {
@@ -79,27 +86,78 @@ function RestaurantScreen({route}) {
         };
 
         retrieveFavoriteStatus();
+        return () => {
+            // Limpiar datos del restaurante al desmontar el componente
+            setRestaurantData(null);
+            setWorkersData([]);
+            setDataLoaded(false);
+        };
     }, [id]);
 
-    if (!restaurantData) {
-        return <Text>Cargando...</Text>; // O algún indicador de carga
+    useEffect(() => {
+        if (isFavorite && route.params?.lastVisitedFavorites) {
+            setFavValue(true)
+        }
+    }, [navigation, route.params, isFavorite]);
+
+    const renderContent = () => {
+        if (!dataLoaded) {
+            // return <Text>Cargando...</Text>; // O algún indicador de carga
+            return <View style={styles.group}><ActivityIndicator animating={true} size="large" color="#111820"/></View>
+        } else if (!restaurantData) {
+            return <View style={styles.group}><ActivityIndicator animating={true} size="large" color="#111820"/></View>
+            // return <Text>No se encontraron datos para mostrar.</Text>;
+        } else {
+
+            const longitud = restaurantData.longitud;
+            const latitud = restaurantData.latitud;
+
+            return <View>
+                <RestaurantInfoCard
+                    titol={restaurantData.nom}
+                    descripcio={restaurantData.descripcio}
+                    web={restaurantData.web}
+                    tel={restaurantData.tel}
+                    ubicacion={`https://www.google.com/maps/search/?api=1&query=${latitud},${longitud}`}
+                />
+                {workersData.map((worker, index) => (
+                    <Items
+                        key={worker.id}
+                        worker={worker}
+                        onPress={() => navigateToWorkerScreen(worker)}
+                        navigation={navigation}
+                    />
+                ))}
+            </View>
+        }
     }
-    const longitud = restaurantData.longitud;
-    const latitud = restaurantData.latitud;
-  
-  const navigateToWorkerScreen = (worker) => {
-    navigation.navigate('WorkerScreen', { 
-        workerId: worker.id, 
-        restaurantId: id,
-        restaurantName: restaurantData.nom, 
-        responsabilitat: worker.responsabilitat
-    });
-  };
+
+    const renderCarousel = () => {
+        if (!dataLoaded || !restaurantData) {
+            return <View style={styles.group}><ActivityIndicator animating={false} size="large" color="#111820"/></View>
+        } else {
+            return <View style={styles.group}>
+                <CarouselDef fotos={restaurantData.foto}/>
+                <TouchableOpacity onPress={toggleFavorite} style={styles.touchStyle}>
+                    <Ionicons name="md-heart" size={45} color={heartColor} style={styles.heartIcon}/>
+                </TouchableOpacity>
+            </View>
+        }
+    }
+
+    const navigateToWorkerScreen = (worker) => {
+        navigation.navigate('WorkerScreen', {
+            workerId: worker.id,
+            restaurantId: id,
+            restaurantName: restaurantData.nom,
+            responsabilitat: worker.responsabilitat
+        });
+    };
 
 
-  const saveToFavorites = async () => {
+    const saveToFavorites = async () => {
         try {
-            const restaurantWithWorkers = { ...restaurantData, workers: workersData };
+            const restaurantWithWorkers = {...restaurantData, workers: workersData};
             // Guardar el restaurante en AsyncStorage
             await AsyncStorage.setItem(`restaurant_${restaurantData.id}`, JSON.stringify(restaurantWithWorkers));
         } catch (error) {
@@ -135,30 +193,14 @@ function RestaurantScreen({route}) {
                 showGoBack={true}
                 showLogIn={false}
                 showSearch={false}
+                specialBackButton={true}
+                lastVisitedFavorites={lastVisitedFavorites}
+                isFavorite={favValue}
                 text="Login"
             />
-            <View style={styles.group}>
-                <CarouselDef fotos={restaurantData.foto}/>
-                <TouchableOpacity onPress={toggleFavorite} style={styles.touchStyle}>
-                    <Ionicons name="md-heart" size={45} color={heartColor} style={styles.heartIcon}/>
-                </TouchableOpacity>
-            </View>
+            {renderCarousel()}
             <ScrollView style={{zIndex: -2}}>
-                <RestaurantInfoCard
-                    titol={restaurantData.nom}
-                    descripcio={restaurantData.descripcio}
-                    web={restaurantData.web}
-                    tel={restaurantData.tel}
-                    ubicacion={`https://www.google.com/maps/search/?api=1&query=${latitud},${longitud}`}
-                />
-                {workersData.map((worker, index) => (
-                    <Items
-                    key={worker.id}
-                    worker={worker}
-                    onPress={() => navigateToWorkerScreen(worker)}
-                    navigation={navigation}
-                    />
-                ))}
+                {renderContent()}
             </ScrollView>
             <FooterNavbar setActiveContent={activeContent} navigation={navigation}/>
         </View>
