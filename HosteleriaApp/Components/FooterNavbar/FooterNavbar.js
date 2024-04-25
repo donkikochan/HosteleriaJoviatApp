@@ -21,7 +21,7 @@ function FooterNavbar({ setActiveContent, navigation }) {
           size={30}
           color="white"
         />
-        <Text style={styles.text}>Profile</Text>
+        <Text style={styles.text}>Perfil</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.iconText, activeButton === "Home"]}
@@ -32,7 +32,7 @@ function FooterNavbar({ setActiveContent, navigation }) {
           size={30}
           color="white"
         />
-        <Text style={styles.text}>Home</Text>
+        <Text style={styles.text}>Inici</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.iconText, activeButton === "Favorite"]}
@@ -43,7 +43,7 @@ function FooterNavbar({ setActiveContent, navigation }) {
           size={30}
           color="white"
         />
-        <Text style={styles.text}>Favorite</Text>
+        <Text style={styles.text}>Favorits</Text>
       </TouchableOpacity>
     </View>
   );
