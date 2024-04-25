@@ -40,8 +40,8 @@ const SwitchBar = ({ isMapView, onToggleView }) => {
         onPress={toggleSwitch}
       >
         <Animated.View style={backgroundStyle} />
-        <Text style={getTextStyle(!isMapView)}>List</Text>
-        <Text style={getTextStyle(isMapView)}>Map</Text>
+        <Text style={getTextStyle(!isMapView)}>Llista</Text>
+        <Text style={getTextStyle(isMapView)}>Mapa</Text>
       </TouchableOpacity>
     </View>
   );

@@ -118,24 +118,26 @@ function HomeScreen() {
 
   const handleConfirmLogOut = () => {
     console.log("handleConfirmLogOut llamado");
-    Alert.alert (
-        ' Tancar sessió ' ,
-        'Esteu segur que voleu tanca la sessió?',
-        [
-            {
-                text: "Sí",
-                onPress: () => {handleLogOut()}
-            },
-            {
-                text: "No",
-                style: "cancel"
-            }
-        ],
+    Alert.alert(
+      " Tancar sessió ",
+      "Esteu segur que voleu tanca la sessió?",
+      [
         {
-            cancelable: true
+          text: "Sí",
+          onPress: () => {
+            handleLogOut();
+          },
         },
-    )
-};
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
 
   const renderContent = () => {
     if (isMapView) {
@@ -153,7 +155,7 @@ function HomeScreen() {
           showLogIn={false}
           showSearch={true}
           showLogOut={true}
-          text="Logout"
+          text="Tancar"
           screen="Login"
           handleSearch={handleSearch}
           handleLogOut={handleConfirmLogOut}
@@ -163,7 +165,7 @@ function HomeScreen() {
           showGoBack={false}
           showLogIn={true}
           showSearch={true}
-          text="Login"
+          text="Entrar"
           screen="Login"
           handleSearch={handleSearch}
         />

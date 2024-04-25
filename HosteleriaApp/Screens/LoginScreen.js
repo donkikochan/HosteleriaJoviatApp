@@ -34,66 +34,72 @@ const LoginScreen = ({ navigation }) => {
 
   const handlePass = () => {
     setSecured(!isSecured);
-  }
+  };
 
   return (
-      <View style={styles.container}>
-        <Navbar
-            showGoBack={false}
-            showLogIn={true}
-            showSearch={false}
-            text="Home"
-            screen="Home"
-        />
-        <View style={styles.rect}>
-          <View style={styles.group}>
-            <View style={styles.rect2}>
-              <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
-            </View>
-            {loginResult === false && (
-                <Text style={styles.loginError}>No s'ha trobat aquest usuari. Revisa les credencials.</Text>
-            )}
-            {loginResult === true && (
-                <Text style={styles.loginValid}>Estàs loguejat.</Text>
-            )}
-            <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
-            <View style={styles.inputBox}>
-              <Ionicons name="mail" size={25} color="black" />
-              <TextInput
-                  placeholder="Correu Electrónic"
-                  maxLength={30}
-                  style={styles.placeholder}
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-              ></TextInput>
-            </View>
-            <Text style={styles.contrasenya}>CONTRASENYA:</Text>
-            <View style={styles.inputBox}>
-              <TouchableOpacity onPress={handlePass}>
-                <Ionicons name={isSecured ? "eye-off" : "eye"} size={25} color="black" />
-              </TouchableOpacity>
-              <TextInput
-                  placeholder="Contrasenya"
-                  secureTextEntry={isSecured}
-                  maxLength={30}
-                  style={styles.contrasenya2}
-                  value={password}
-                  onChangeText={setPassword}
-                  autoCapitalize="none"
-              ></TextInput>
-            </View>
-            <TouchableOpacity>
-              <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-                Enviar
-              </Text>
-            </TouchableOpacity>
+    <View style={styles.container}>
+      <Navbar
+        showGoBack={false}
+        showLogIn={true}
+        showSearch={false}
+        text="Inici"
+        screen="Home"
+      />
+      <View style={styles.rect}>
+        <View style={styles.group}>
+          <View style={styles.rect2}>
+            <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
           </View>
+          {loginResult === false && (
+            <Text style={styles.loginError}>
+              No s'ha trobat aquest usuari. Revisa les credencials.
+            </Text>
+          )}
+          {loginResult === true && (
+            <Text style={styles.loginValid}>Estàs loguejat.</Text>
+          )}
+          <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
+          <View style={styles.inputBox}>
+            <Ionicons name="mail" size={25} color="black" />
+            <TextInput
+              placeholder="Correu Electrónic"
+              maxLength={30}
+              style={styles.placeholder}
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+            ></TextInput>
+          </View>
+          <Text style={styles.contrasenya}>CONTRASENYA:</Text>
+          <View style={styles.inputBox}>
+            <TouchableOpacity onPress={handlePass}>
+              <Ionicons
+                name={isSecured ? "eye-off" : "eye"}
+                size={25}
+                color="black"
+              />
+            </TouchableOpacity>
+            <TextInput
+              placeholder="Contrasenya"
+              secureTextEntry={isSecured}
+              maxLength={30}
+              style={styles.contrasenya2}
+              value={password}
+              onChangeText={setPassword}
+              autoCapitalize="none"
+            ></TextInput>
+          </View>
+          <TouchableOpacity>
+            <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
+              Enviar
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
+    </View>
   );
 };
 
@@ -109,7 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     marginTop: 180,
     justifyContent: "center",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   correuElectronic: {
     color: "#121212",
