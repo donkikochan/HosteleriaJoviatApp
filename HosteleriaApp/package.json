@@ -9,34 +9,35 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/vector-icons": "^13.0.0",
-    "@react-native-async-storage/async-storage": "1.18.2",
+    "@expo/vector-icons": "^14.0.1",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/geolocation": "^3.2.0",
+    "@react-native-firebase/app": "^18.8.0",
     "@react-native-firebase/firestore": "^18.8.0",
-    "@react-native-picker/picker": "^2.6.1",
+    "@react-native-picker/picker": "2.7.5",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.17",
     "@react-navigation/stack": "^6.3.20",
     "deprecated-react-native-prop-types": "^5.0.0",
-    "expo": "~49.0.15",
-    "expo-modules-core": "~1.5.12",
-    "expo-status-bar": "~1.6.0",
-    "expo-updates": "~0.18.19",
+    "expo": "^51.0.0",
+    "expo-image-picker": "~15.0.4",
+    "expo-modules-core": "~1.12.10",
+    "expo-status-bar": "~1.12.1",
+    "expo-updates": "~0.25.10",
     "firebase": "^10.8.0",
     "react": "18.2.0",
-    "react-native": "0.72.6",
+    "react-native": "0.74.1",
     "react-native-email": "^2.1.0",
     "react-native-geolocation": "^1.0.0",
     "react-native-geolocation-service": "^5.3.1",
-    "react-native-maps": "^1.7.1",
+    "react-native-maps": "1.14.0",
     "react-native-phone-call": "^1.2.0",
     "react-native-snap-carousel": "^1.3.1",
     "react-navigation": "^5.0.0",
-    "semver": "^7.5.1",
-    "expo-image-picker": "~14.3.2"
+    "semver": "^7.5.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.24.0"
   },
   "private": true
 }

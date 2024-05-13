@@ -21,6 +21,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { updateDoc } from "firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const Profile = () => {
   //funcion para manejar el cierre de sesión
@@ -34,7 +35,10 @@ const Profile = () => {
   };
 
   const { currentUser } = useAuth();
-  // console.log("Current user: ", currentUser);
+  console.log(
+    "Current User UID: ",
+    currentUser ? currentUser.uid : "No user logged in"
+  );
 
   const navigation = useNavigation();
   const [activeContent, setContent] = useState("Profile");
@@ -48,7 +52,7 @@ const Profile = () => {
       const userRef = doc(db, "users", currentUser.uid);
       try {
         // Crear un nuevo objeto con los datos de usuario existentes
-        let updatedUserData = { ...userData };
+        let updatedUserData = { ...userData, imageUrl: image };
 
         // Si image no es null, actualizar imageUrl en el objeto
         if (image) {
@@ -81,6 +85,45 @@ const Profile = () => {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      uploadImage(result.assets[0].uri);
+    }
+  };
+
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    // que el nombre del archivo sea único
+    const fileName = `${currentUser.uid}_${new Date().toISOString()}.jpg`;
+
+    const storage = getStorage();
+    const storageRef = ref(storage, `images/${currentUser.uid}/${fileName}`);
+
+    uploadBytes(storageRef, blob)
+      .then((snapshot) => {
+        getDownloadURL(snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          setImage(downloadURL);
+          updateProfileImage(downloadURL);
+        });
+      })
+      .catch((error) => {
+        console.error("Error uploading image: ", error);
+      });
+  };
+
+  const updateProfileImage = async (url) => {
+    if (currentUser && url) {
+      const userRef = doc(db, "users", currentUser.uid);
+      try {
+        await updateDoc(userRef, { imageUrl: url });
+        console.log("Perfil actualizado con éxito con la nueva URL de imagen");
+      } catch (error) {
+        console.error(
+          "Error al actualizar el perfil con la nueva imagen: ",
+          error
+        );
+      }
     }
   };
 

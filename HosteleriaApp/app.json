@@ -4,10 +4,10 @@
     "slug": "HosteleriaApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -15,12 +15,21 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.JoviatH.hosteleriaapp"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.JoviatH.hosteleriaapp",
+      "versionCode": 1,
+      "keystore": {
+        "keystorePath": "./JoviatH.keystore",
+        "keystoreAlias": "JoviatH",
+        "keystorePassword": "JoviatH+v1",
+        "keyPassword": "JoviatH+v1"
       }
     },
     "web": {
@@ -30,7 +39,12 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/6ad709dd-0d39-49c7-b7f6-1d590c02a4a9"
+      "url": "https://u.expo.dev/a2940bb7-ee42-4a12-ad3d-25dd3fb5fe58"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a2940bb7-ee42-4a12-ad3d-25dd3fb5fe58"
+      }
     }
   }
 }
