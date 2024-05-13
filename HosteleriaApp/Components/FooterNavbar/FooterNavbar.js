@@ -28,7 +28,7 @@ function FooterNavbar({ setActiveContent, navigation }) {
         onPress={() => handlePress("Home")}
       >
         <Ionicons
-          name={activeButton === "Home" ? "md-home-sharp" : "md-home-outline"}
+          name={activeButton === "Home" ? "home-sharp" : "home-outline"}
           size={30}
           color="white"
         />
@@ -39,7 +39,7 @@ function FooterNavbar({ setActiveContent, navigation }) {
         onPress={() => handlePress("Favorite")}
       >
         <Ionicons
-          name={activeButton === "Favorite" ? "md-heart" : "md-heart-outline"}
+          name={activeButton === "Favorite" ? "heart" : "heart-outline"}
           size={30}
           color="white"
         />
