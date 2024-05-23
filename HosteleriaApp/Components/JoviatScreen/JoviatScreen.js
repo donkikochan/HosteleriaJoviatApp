@@ -29,8 +29,10 @@ function JoviatScreen() {
       <View style={styles.group}>
         <CarouselDef
           fotos={[
+            "https://raw.githubusercontent.com/Majoissa/HosteleriaJoviatApp/main/HosteleriaApp/Components/JoviatScreen/1200_1510853964cuina-escola-hotelreia-joviat.jpg",
             "https://raw.githubusercontent.com/Majoissa/HosteleriaJoviatApp/main/HosteleriaApp/Components/JoviatScreen/Escuela-de-Hosteleri%CC%81a-Joviat_Bar-Business-1.jpg",
             "https://raw.githubusercontent.com/Majoissa/HosteleriaJoviatApp/main/HosteleriaApp/Components/JoviatScreen/escola-joviat.jpg",
+            "https://raw.githubusercontent.com/Majoissa/HosteleriaJoviatApp/main/HosteleriaApp/Components/JoviatScreen/Cuina-i-gastronomia-1-medium_large.png",
           ]}
         />
       </View>
@@ -73,16 +75,6 @@ function JoviatScreen() {
           />
         </View>
         <ItemDev
-          name="Anna Victoria Scribelka"
-          foto={require("../ChefList/UserChef.png")}
-          descripcio="Ha estudiat a la Joviat des de l'any 2014."
-          isLast={false}
-          showLinkedin={false}
-          showMail={true}
-          showPhone={false}
-          mail="vscribelka@gmail.com"
-        />
-        <ItemDev
           name="María José Issa"
           foto={{
             uri: "https://raw.githubusercontent.com/Majoissa/Majoissa.github.io/main/imagenes/majo.png",
@@ -109,13 +101,24 @@ function JoviatScreen() {
           phone="613979247"
         />
         <ItemDev
-          name="Ismael"
+          name="Ismael Khassal"
           foto={require("../ChefList/UserChef.png")}
           descripcio="Desenvolupador. Ha estudiat desenvolupament d'aplicacions mòbils i videojocs a Joviat"
           isLast={false}
           showLinkedin={false}
           showPhone={false}
           showMail={true}
+        />
+
+        <ItemDev
+          name="Anna Victoria Scribelka"
+          foto={require("../ChefList/UserChef.png")}
+          descripcio="Ha estudiat a la Joviat des de l'any 2014."
+          isLast={false}
+          showLinkedin={false}
+          showMail={true}
+          showPhone={false}
+          mail="vscribelka@gmail.com"
         />
       </ScrollView>
       <FooterNavbar setActiveContent={activeContent} navigation={navigation} />
