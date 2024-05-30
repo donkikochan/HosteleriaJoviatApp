@@ -99,36 +99,7 @@ restaurant-alumni-app/
 ├── app.json
 ├── package.json
 └── README.md
-Contribuciones
-¡Contribuciones son bienvenidas! Por favor, sigue los siguientes pasos:
 
-Haz un fork del proyecto.
-Crea una nueva rama (git checkout -b mejora-nueva)
-Haz tus cambios y confirma (git commit -m 'Añadir nueva mejora')
-Sube a la rama (git push origin mejora-nueva)
-Abre un Pull Request.
-Pruebas
-Para ejecutar las pruebas:
-
-bash
-Copiar código
-npm test
-Utilizamos Jest para las pruebas unitarias y de integración.
-
-Despliegue
-Para desplegar el proyecto en producción:
-
-Construye la aplicación:
-bash
-Copiar código
-expo build:android
-expo build:ios
-Sigue las instrucciones de Expo para publicar en Google Play y App Store.
-Autores
-Nombre del Autor 1 - Desarrollador Principal
-Nombre del Autor 2 - Diseñador de UI/UX
-Licencia
-Este proyecto está bajo la licencia MIT. Ver el archivo LICENSE para más detalles.
 
 Reconocimientos
 Agradecimientos a los profesores de la institución por su apoyo.
