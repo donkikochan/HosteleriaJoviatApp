@@ -54,17 +54,17 @@ Escanea el código QR con la aplicación Expo Go o inicia en un emulador desde l
 
 
 Características
-Exploración de restaurantes: Ver la lista de restaurantes donde trabajan alumnos y ex alumnos en dos modalidades, una version lista o otra version donde se puede ver la ubicacion de los restaurantes (al tocar  en ellos podras ir al restaurante de la misma manera que lo haces desde el modo lista), tambien en esta busqueda lo puedes hacer desde la lupa filtrando por restaurantes.
+*Exploración de restaurantes: Ver la lista de restaurantes donde trabajan alumnos y ex alumnos en dos modalidades, una version lista o otra version donde se puede ver la ubicacion de los restaurantes (al tocar  en ellos podras ir al restaurante de la misma manera que lo haces desde el modo lista), tambien en esta busqueda lo puedes hacer desde la lupa filtrando por restaurantes.
 
-Información detallada: Acceder a detalles del restaurante  donde podra leer una breve descripcion , visitar la pagina web, telefono y ubicacion y ademas poder ver la lista los empleados que pasaron o estan en joviat Hosteleria, de aqui podra acceder a la informacion de cada alumno/ex alumno para poder ver la informacion del mismo, la diferencia seria que si esta viendo la app en modo random o en modo usuario ya que con la segunda opcion podra ver informacion mas sensible que la de la version random. 
+*Información detallada: Acceder a detalles del restaurante  donde podra leer una breve descripcion , visitar la pagina web, telefono y ubicacion y ademas poder ver la lista los empleados que pasaron o estan en joviat Hosteleria, de aqui podra acceder a la informacion de cada alumno/ex alumno para poder ver la informacion del mismo, la diferencia seria que si esta viendo la app en modo random o en modo usuario ya que con la segunda opcion podra ver informacion mas sensible que la de la version random. 
 
-Autenticación: Inicio de sesión para ver información completa de los alumnos/exalumnos como se completo anteriormente pero tambien podra acceder a un perfil donde podra modificar su informacion personal como la imagen de usuario, nombre con el que quiere ser visible en la app y su fecha de nacimiento.
+*Autenticación: Inicio de sesión para ver información completa de los alumnos/exalumnos como se completo anteriormente pero tambien podra acceder a un perfil donde podra modificar su informacion personal como la imagen de usuario, nombre con el que quiere ser visible en la app y su fecha de nacimiento.
 
-Funcion de favoritos: los usuarios en ambas versiones podran hacer uso de la funcion de guardar en favoritos los restaurantes que destaquen a su gusto y tenerlos ahi almacenados paratener mas facil el acceso sin necesidad de buscar entre todos los restaurantes.
+*Funcion de favoritos: los usuarios en ambas versiones podran hacer uso de la funcion de guardar en favoritos los restaurantes que destaquen a su gusto y tenerlos ahi almacenados paratener mas facil el acceso sin necesidad de buscar entre todos los restaurantes.
 
-Modo sin conexión: Navegación básica sin necesidad de iniciar sesión.
+*Modo sin conexión: Navegación básica sin necesidad de iniciar sesión.
 
-seccion de About Us: donde se podra ver el restaurante de la escuela Joviat y tambien la informacion de los alumnos que llevaron a cabo el desarrollo de la app durante el proyecto de sintesis del segundo año de informatica 2024.
+*seccion de About Us: donde se podra ver el restaurante de la escuela Joviat y tambien la informacion de los alumnos que llevaron a cabo el desarrollo de la app durante el proyecto de sintesis del segundo año de informatica 2024.
 
 
 Tecnologías
