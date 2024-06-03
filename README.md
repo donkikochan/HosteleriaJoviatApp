@@ -9,13 +9,6 @@ Una aplicación móvil para mostrar restaurantes donde trabajan alumnos y exalum
 3. [Uso](#uso)
 4. [Características](#características)
 5. [Tecnologías](#tecnologías)
-6. [Estructura del Proyecto](#estructura-del-proyecto)
-7. [Contribuciones](#contribuciones)
-8. [Pruebas](#pruebas)
-9. [Despliegue](#despliegue)
-10. [Autores](#autores)
-11. [Licencia](#licencia)
-12. [Reconocimientos](#reconocimientos)
 
 ## Descripción
 
@@ -64,42 +57,13 @@ Características
 
 *Modo sin conexión: Navegación básica sin necesidad de iniciar sesión.
 
-*seccion de About Us: donde se podra ver el restaurante de la escuela Joviat y tambien la informacion de los alumnos que llevaron a cabo el desarrollo de la app durante el proyecto de sintesis del segundo año de informatica 2024.
+*seccion de pantalla joviat: donde se podra ver el restaurante de la escuela Joviat y tambien la informacion de los alumnos que llevaron a cabo el desarrollo de la app durante el proyecto de sintesis del segundo año de informatica 2024.
 
 
 Tecnologías
 React Native: Desarrollo de la interfaz móvil.
 Expo: Plataforma para ejecutar y construir la aplicación asi facilitar el poder ver como se ve en los dispositivos con distintos sistemas operativos (Android y IOS).
 Firebase: Autenticación y base de datos para alamcenar los usuarios y restaurantes.
-Axios: Para realizar peticiones HTTP.
-
-
-Estructura del Proyecto
-css
-Copiar código
-restaurant-alumni-app/
-│
-├── assets/
-│   └── images/
-│       └── logo.png
-├── src/
-│   ├── components/
-│   │   ├── RestaurantCard.js
-│   │   └── UserProfile.js
-│   ├── navigation/
-│   │   └── AppNavigator.js
-│   ├── screens/
-│   │   ├── HomeScreen.js
-│   │   ├── LoginScreen.js
-│   │   └── RestaurantDetailScreen.js
-│   ├── services/
-│   │   └── api.js
-│   └── App.js
-├── .gitignore
-├── app.json
-├── package.json
-└── README.md
-
 
 Reconocimientos
 Agradecimientos a los profesores de la institución por su apoyo.
