@@ -1,4 +1,4 @@
-# Restaurant Alumni App
+# Hoteleria Joviat App
 
 Una aplicación móvil para mostrar restaurantes donde trabajan alumnos y exalumnos de la carrera de hosteleria de la Escuela Joviat- Manresa. Los usuarios pueden ver la información del restaurante y detalles de los alumnos/exalumnos que trabajan allí. La aplicación ofrece una experiencia más completa a los usuarios registrados.
 
