@@ -202,7 +202,7 @@ const fetchRestaurants = async () => {
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Seleccionar Restaurant</Text>
+            <Text style={styles.modalTitle}>Llistat de Restaurant</Text>
             <TouchableOpacity
               onPress={() => setShowRestaurantPicker(false)}
               style={styles.closeButton}
