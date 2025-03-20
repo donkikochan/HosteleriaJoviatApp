@@ -426,7 +426,7 @@ const Profile = () => {
 
     useEffect(() => {
       const filtered = restaurants.filter((restaurant) =>
-        restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
+        restaurant.name.toLowerCase().includes(searchQuery.toLowerCase()),
       )
       setFilteredRestaurants(filtered)
       setRestaurantPickerPage(0)
@@ -436,7 +436,7 @@ const Profile = () => {
     const startRestaurantIndex = restaurantPickerPage * restaurantsPerPage
     const displayedRestaurants = filteredRestaurants.slice(
       startRestaurantIndex,
-      startRestaurantIndex + restaurantsPerPage
+      startRestaurantIndex + restaurantsPerPage,
     )
 
     const handleCloseModal = () => {
@@ -517,8 +517,13 @@ const Profile = () => {
                   </Text>
 
                   <TouchableOpacity
-                    style={[styles.paginationButton, restaurantPickerPage >= totalRestaurantPages - 1 && styles.paginationButtonDisabled]}
-                    onPress={() => setRestaurantPickerPage(Math.min(totalRestaurantPages - 1, restaurantPickerPage + 1))}
+                    style={[
+                      styles.paginationButton,
+                      restaurantPickerPage >= totalRestaurantPages - 1 && styles.paginationButtonDisabled,
+                    ]}
+                    onPress={() =>
+                      setRestaurantPickerPage(Math.min(totalRestaurantPages - 1, restaurantPickerPage + 1))
+                    }
                     disabled={restaurantPickerPage >= totalRestaurantPages - 1}
                   >
                     <Text style={styles.paginationButtonText}>Siguiente</Text>
@@ -552,15 +557,18 @@ const Profile = () => {
         <Navbar showGoBack={false} showLogIn={true} showSearch={false} text="Entrar" screen="Login" />
         <ScrollView>
           <View style={[styles.userInfo, { paddingBottom: 50 }]}>
-            <Text style={styles.titleEdition}>Necessites iniciar sessió per accedir a aquesta pàgina.</Text>
+            <Text style={styles.titleEdition}>Necessites iniciar sessió o registrarte per accedir a aquesta pàgina.</Text>
             <Image source={require("../../assets/logo.png")} style={styles.profileImage} />
           </View>
-          <TouchableOpacity
-            style={[styles.boton, { backgroundColor: "#444", marginHorizontal: 130 }]}
-            onPress={() => navigation.navigate("Login")}
-          >
-            <Text style={styles.botonText}>Inicia sessió</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.boton} onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.botonText}>Inicia sessió</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.boton} onPress={() => navigation.navigate("Register")}>
+              <Text style={styles.botonText}>Register</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
         <FooterNavbar setActiveContent={activeContent} navigation={navigation} />
       </View>
@@ -965,7 +973,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     alignItems: "center",
-    alignSelf: "center",
+    justifyContent: "center",
     minWidth: 150,
   },
   botonText: {
@@ -1381,27 +1389,27 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   paginationControls: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 10,
     marginTop: 15,
-    marginBottom: 10
+    marginBottom: 10,
   },
   paginationButton: {
-    backgroundColor: '#0A16D6',
+    backgroundColor: "#0A16D6",
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderRadius: 5,
     minWidth: 100,
-    alignItems: 'center'
+    alignItems: "center",
   },
   paginationButtonDisabled: {
-    backgroundColor: '#ccc'
+    backgroundColor: "#ccc",
   },
   paginationButtonText: {
-    color: '#fff',
-    fontWeight: 'bold'
+    color: "#fff",
+    fontWeight: "bold",
   },
   registerButton: {
     marginTop: 10,
@@ -1415,9 +1423,15 @@ const styles = StyleSheet.create({
   registerButtonText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "white"
-  }
-});
+    color: "white",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    gap: 20,
+  },
+})
 
-export default Profile;
+export default Profile
 
