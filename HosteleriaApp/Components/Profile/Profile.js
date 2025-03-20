@@ -21,9 +21,8 @@ import Navbar from "../Navbar/Navbar"
 import FooterNavbar from "../FooterNavbar/FooterNavbar"
 import { signOut } from "firebase/auth"
 import { auth, db } from "../FirebaseConfig"
-import { doc, getDoc, collection, getDocs, updateDoc } from "firebase/firestore"
+import { doc, getDoc, collection, getDocs, updateDoc, query, where } from "firebase/firestore"
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons"
-import { Picker } from "@react-native-picker/picker"
 import * as ImagePicker from "expo-image-picker"
 import * as Device from "expo-device"
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
@@ -67,6 +66,8 @@ const Profile = () => {
   const [showProfileImagePickerModal, setShowProfileImagePickerModal] = useState(false)
   const [restaurantPickerPage, setRestaurantPickerPage] = useState(0)
   const [searchQuery, setSearchQuery] = useState("")
+  const [isVerified, setIsVerified] = useState(null)
+  const [isCheckingVerification, setIsCheckingVerification] = useState(true)
 
   // Función para cargar los restaurantes desde Firebase
   const fetchRestaurants = async () => {
@@ -381,41 +382,64 @@ const Profile = () => {
 
   useEffect(() => {
     if (currentUser) {
-      const fetchUserData = async () => {
-        const userRef = doc(db, "users", currentUser.uid)
+      const checkVerificationStatus = async () => {
+        setIsCheckingVerification(true)
         try {
+          // First check if user exists in regular users collection
+          const userRef = doc(db, "users", currentUser.uid)
           const userDoc = await getDoc(userRef)
+
           if (userDoc.exists()) {
-            const data = userDoc.data()
-            setUserData(data)
-            if (data.imageUrl) {
-              setImage(data.imageUrl)
+            const userData = userDoc.data()
+            setUserData(userData)
+
+            // Check if user is in AltaUsers collection
+            const altaUsersQuery = collection(db, "AltaUsers")
+            const q = query(altaUsersQuery, where("userId", "==", currentUser.uid))
+            const altaUsersSnapshot = await getDocs(q)
+
+            // If user is in AltaUsers collection, they need verification
+            if (!altaUsersSnapshot.empty) {
+              setIsVerified(false)
+            } else {
+              // User is not in AltaUsers, so they don't need verification
+              setIsVerified(true)
             }
-            if (data.restaurants) {
-              setSelectedRestaurants(data.restaurants)
+
+            if (userData.imageUrl) {
+              setImage(userData.imageUrl)
+            }
+            if (userData.restaurants) {
+              setSelectedRestaurants(userData.restaurants)
 
               // Initialize restaurant images from the data
               const images = {}
-              data.restaurants.forEach((restaurant) => {
+              userData.restaurants.forEach((restaurant) => {
                 if (restaurant.imageUrl) {
                   images[restaurant.id] = restaurant.imageUrl
                 }
               })
               setRestaurantImages(images)
             }
-            if (data.birth) {
-              const [day, month, year] = data.birth.split("/")
+            if (userData.birth) {
+              const [day, month, year] = userData.birth.split("/")
               setDate(new Date(year, month - 1, day))
             }
           } else {
             console.log("No se encontró el documento del usuario.")
+            setIsVerified(false)
           }
         } catch (error) {
           console.error("Error al obtener el documento del usuario:", error)
+          setIsVerified(false)
+        } finally {
+          setIsCheckingVerification(false)
         }
       }
 
-      fetchUserData()
+      checkVerificationStatus()
+    } else {
+      setIsCheckingVerification(false)
     }
   }, [currentUser])
 
@@ -551,13 +575,53 @@ const Profile = () => {
     ])
   }
 
+  // Render verification waiting screen
+  const renderVerificationWaiting = () => {
+    return (
+      <View style={styles.container}>
+        <Navbar showGoBack={false} showLogIn={false} showSearch={false} text="Perfil" screen="Profile" />
+        <View style={styles.verificationContainer}>
+          <View style={styles.verificationContent}>
+            <ActivityIndicator size="large" color="#0A16D6" style={styles.verificationSpinner} />
+            <Text style={styles.verificationTitle}>Esperando verificación</Text>
+            <Text style={styles.verificationText}>
+              Tu cuenta está pendiente de verificación por parte del administrador.
+            </Text>
+            <Text style={styles.verificationText}>Recibirás acceso completo una vez que tu cuenta sea verificada.</Text>
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogOut}>
+              <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <FooterNavbar setActiveContent={activeContent} navigation={navigation} />
+      </View>
+    )
+  }
+
+  if (isCheckingVerification) {
+    return (
+      <View style={styles.container}>
+        <Navbar showGoBack={false} showLogIn={false} showSearch={false} text="Perfil" screen="Profile" />
+        <View style={styles.loadingVerificationContainer}>
+          <ActivityIndicator size="large" color="#0A16D6" />
+          <Text style={styles.loadingVerificationText}>Cargando perfil...</Text>
+        </View>
+        <FooterNavbar setActiveContent={activeContent} navigation={navigation} />
+      </View>
+    )
+  }
+
+  if (currentUser && isVerified === false) {
+    return renderVerificationWaiting()
+  }
+
   if (!currentUser) {
     return (
       <View style={styles.container}>
         <Navbar showGoBack={false} showLogIn={true} showSearch={false} text="Entrar" screen="Login" />
         <ScrollView>
           <View style={[styles.userInfo, { paddingBottom: 50 }]}>
-            <Text style={styles.titleEdition}>Necessites iniciar sessió o registrarte per accedir a aquesta pàgina.</Text>
+            <Text style={styles.titleEdition}>Necessites iniciar sessió per accedir a aquesta pàgina.</Text>
             <Image source={require("../../assets/logo.png")} style={styles.profileImage} />
           </View>
           <View style={styles.buttonContainer}>
@@ -565,7 +629,7 @@ const Profile = () => {
               <Text style={styles.botonText}>Inicia sessió</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.boton} onPress={() => navigation.navigate("Register")}>
+            <TouchableOpacity style={styles.boton} onPress={() => navigation.navigate("RegisterScreen")}>
               <Text style={styles.botonText}>Register</Text>
             </TouchableOpacity>
           </View>
@@ -667,20 +731,7 @@ const Profile = () => {
         <View style={styles.academicSection}>
           <View style={styles.infoContainer}>
             <Text style={editMode ? styles.labelEstat : styles.label}>Estat acadèmic:</Text>
-            {editMode ? (
-              <Picker
-                selectedValue={userData ? userData.academicStatus : ""}
-                style={styles.picker}
-                onValueChange={(itemValue) => setUserData({ ...userData, academicStatus: itemValue })}
-                mode="dropdown"
-                dropdownIconColor={"#444"}
-              >
-                <Picker.Item label="Alumne" value="Alumne" color={"#0A16D6"} />
-                <Picker.Item label="Ex-alumne" value="Ex-alumne" color={"#0A16D6"} />
-              </Picker>
-            ) : (
-              <Text style={styles.value}>{userData ? userData.academicStatus : "No disponible"}</Text>
-            )}
+            <Text style={styles.value}>{userData ? userData.academicStatus : "Alumne"}</Text>
           </View>
         </View>
 
@@ -1186,7 +1237,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingHorizontal: 10,
   },
-  // Modificar el estilo del selectedRestaurantItem para dar más espacio vertical
   selectedRestaurantItem: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -1197,7 +1247,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     borderWidth: 1,
     borderColor: "#ddd",
-    paddingVertical: 12, // Añadir más espacio vertical
+    paddingVertical: 12,
   },
   selectedRestaurantText: {
     fontSize: 16,
@@ -1411,25 +1461,87 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
-  registerButton: {
-    marginTop: 10,
-    backgroundColor: "#444",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginHorizontal: 100,
-  },
-  registerButtonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
     gap: 20,
+  },
+  verificationContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  verificationContent: {
+    backgroundColor: "#f8f8f8",
+    borderRadius: 10,
+    padding: 20,
+    width: "90%",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  verificationSpinner: {
+    marginBottom: 20,
+  },
+  verificationTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 15,
+    color: "#0A16D6",
+    textAlign: "center",
+  },
+  verificationText: {
+    fontSize: 16,
+    color: "#444",
+    textAlign: "center",
+    marginBottom: 10,
+    lineHeight: 22,
+  },
+  logoutButton: {
+    backgroundColor: "#444",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  logoutButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  loadingVerificationContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingVerificationText: {
+    marginTop: 15,
+    fontSize: 18,
+    color: "#666",
+  },
+  restaurantImagePlaceholder: {
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
+  },
+  restaurantTextContainer: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  editModeResponsibilityText: {
+    fontSize: 14,
+    color: "#666",
+    fontStyle: "italic",
+    marginTop: 2,
   },
 })
 

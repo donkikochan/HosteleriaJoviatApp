@@ -6,7 +6,7 @@ import Navbar from "../Components/Navbar/Navbar"
 import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons"
 import { auth, db } from "../Components/FirebaseConfig"
 import { createUserWithEmailAndPassword } from "firebase/auth"
-import { collection, addDoc } from "firebase/firestore"
+import { doc, setDoc, collection, addDoc } from "firebase/firestore"
 import * as ImagePicker from "expo-image-picker"
 import * as Device from "expo-device"
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
@@ -56,6 +56,7 @@ const RegisterScreen = ({ navigation }) => {
         birth: formattedDate,
         createdAt: new Date(),
         userId: user.uid,
+        verified: false, // Add verification status
       }
 
       // If profile image exists, upload it
@@ -64,15 +65,22 @@ const RegisterScreen = ({ navigation }) => {
         userData.imageUrl = imageUrl
       }
 
-      // Save user data to AltaUsers collection
+      // Save user data to AltaUsers collection (waiting for verification)
       await addDoc(collection(db, "AltaUsers"), userData)
+
+      // Also save minimal user data to users collection (regular user data)
+      await setDoc(doc(db, "users", user.uid), {
+        username: nombre,
+        email: email.trim(),
+        createdAt: new Date(),
+      })
 
       console.log("Usuario registrado con éxito en AltaUsers")
       setRegisterResult(true)
 
-      // Navigate to Home screen
+      // Navigate to Profile screen instead of Home
       setTimeout(() => {
-        navigation.navigate("Home")
+        navigation.navigate("Profile")
       }, 1500)
     } catch (error) {
       console.error("Error al registrar:", error)
