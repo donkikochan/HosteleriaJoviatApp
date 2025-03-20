@@ -8,6 +8,7 @@ import FavRestScreen from "./Components/FavoritesScreen/FavRestScreen";
 import Profile from "./Components/Profile/Profile";
 import { AuthProvider } from "./AuthContext";
 import JoviatScreen from "./Components/JoviatScreen/JoviatScreen";
+import RegisterScreen from './Screens/RegisterScreen';
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,7 @@ export default function App() {
                         component={JoviatScreen}
                         options={{ headerShown: false }}
                     />
+                    <Stack.Screen name="Register" component={RegisterScreen} />
                 </Stack.Navigator>
             </NavigationContainer>
         </AuthProvider>

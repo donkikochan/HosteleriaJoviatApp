@@ -48,7 +48,9 @@ const LoginScreen = ({ navigation }) => {
       <View style={styles.rect}>
         <View style={styles.group}>
           <View style={styles.rect2}>
-            <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
+            <View style={styles.headerContainer}>
+              <Text style={styles.iniciaLaSessio}>INICIA LA SESSIÓ</Text>
+            </View>
           </View>
           {loginResult === false && (
             <Text style={styles.loginError}>
@@ -168,12 +170,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "90%",
+  },
   iniciaLaSessio: {
     color: "rgba(255,255,255,1)",
-    textAlign: "center",
     fontSize: 25,
     fontWeight: "bold",
   },
+
   button: {
     marginTop: 25,
     backgroundColor: "#444",

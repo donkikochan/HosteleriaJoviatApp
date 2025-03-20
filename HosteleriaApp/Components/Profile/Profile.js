@@ -140,19 +140,33 @@ const Profile = () => {
   }
 
   // Add this function to save the responsibility
-  const saveResponsibility = () => {
+  const saveResponsibility = async () => {
     if (currentRestaurantId) {
       const finalResponsibility = responsibilityType === "Altres" ? responsibility : responsibilityType
 
-      const updatedRestaurants = selectedRestaurants.map((restaurant) => {
-        if (restaurant.id === currentRestaurantId) {
-          return { ...restaurant, responsibility: finalResponsibility }
-        }
-        return restaurant
-      })
+      try {
+        const updatedRestaurants = selectedRestaurants.map((restaurant) => {
+          if (restaurant.id === currentRestaurantId) {
+            return { ...restaurant, responsibility: finalResponsibility }
+          }
+          return restaurant
+        })
 
-      setSelectedRestaurants(updatedRestaurants)
-      setShowResponsibilityModal(false)
+        setSelectedRestaurants(updatedRestaurants)
+
+        // Update the user's data in Firestore
+        if (currentUser) {
+          const userRef = doc(db, "users", currentUser.uid)
+          await updateDoc(userRef, { restaurants: updatedRestaurants })
+        }
+
+        setShowResponsibilityModal(false)
+        setResponsibility("")
+        setResponsibilityType("")
+      } catch (error) {
+        console.error("Error updating responsibility:", error)
+        Alert.alert("Error", "No se pudo actualizar la responsabilidad. Por favor, inténtelo de nuevo.")
+      }
     }
   }
 
@@ -407,48 +421,27 @@ const Profile = () => {
 
   // Implement the RestaurantPicker component with pagination and search
   const RestaurantPicker = () => {
-    // Mover el filtrado fuera del renderizado principal para evitar re-renders innecesarios
     const [filteredRestaurants, setFilteredRestaurants] = useState([])
+    const restaurantsPerPage = 5
 
-    // Actualizar los restaurantes filtrados cuando cambia la búsqueda o los restaurantes
     useEffect(() => {
       const filtered = restaurants.filter((restaurant) =>
-        restaurant.name.toLowerCase().includes(searchQuery.toLowerCase()),
+        restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
       setFilteredRestaurants(filtered)
-
-      // Reset page when search query changes
-      if (restaurantPickerPage !== 0) {
-        setRestaurantPickerPage(0)
-      }
+      setRestaurantPickerPage(0)
     }, [searchQuery, restaurants])
 
-    // Calculate pagination values
-    const restaurantsPerPage = 5
     const totalRestaurantPages = Math.ceil(filteredRestaurants.length / restaurantsPerPage)
     const startRestaurantIndex = restaurantPickerPage * restaurantsPerPage
     const displayedRestaurants = filteredRestaurants.slice(
       startRestaurantIndex,
-      startRestaurantIndex + restaurantsPerPage,
+      startRestaurantIndex + restaurantsPerPage
     )
 
-    // Handle pagination navigation
-    const goToPreviousPage = () => {
-      if (restaurantPickerPage > 0) {
-        setRestaurantPickerPage(restaurantPickerPage - 1)
-      }
-    }
-
-    const goToNextPage = () => {
-      if (restaurantPickerPage < totalRestaurantPages - 1) {
-        setRestaurantPickerPage(restaurantPickerPage + 1)
-      }
-    }
-
-    // Función para manejar el cierre del modal
     const handleCloseModal = () => {
-      setRestaurantPickerPage(0) // Reset page when closing
-      setSearchQuery("") // Clear search when closing
+      setRestaurantPickerPage(0)
+      setSearchQuery("")
       setShowRestaurantPicker(false)
     }
 
@@ -463,7 +456,6 @@ const Profile = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Search input - Mejorado para mantener el foco */}
             <View style={styles.searchContainer}>
               <FontAwesome5 name="search" size={16} color="#666" style={styles.searchIcon} />
               <TextInput
@@ -511,11 +503,10 @@ const Profile = () => {
                   ))}
                 </View>
 
-                {/* Pagination controls */}
                 <View style={styles.paginationControls}>
                   <TouchableOpacity
                     style={[styles.paginationButton, restaurantPickerPage === 0 && styles.paginationButtonDisabled]}
-                    onPress={goToPreviousPage}
+                    onPress={() => setRestaurantPickerPage(Math.max(0, restaurantPickerPage - 1))}
                     disabled={restaurantPickerPage === 0}
                   >
                     <Text style={styles.paginationButtonText}>Anterior</Text>
@@ -526,11 +517,8 @@ const Profile = () => {
                   </Text>
 
                   <TouchableOpacity
-                    style={[
-                      styles.paginationButton,
-                      restaurantPickerPage >= totalRestaurantPages - 1 && styles.paginationButtonDisabled,
-                    ]}
-                    onPress={goToNextPage}
+                    style={[styles.paginationButton, restaurantPickerPage >= totalRestaurantPages - 1 && styles.paginationButtonDisabled]}
+                    onPress={() => setRestaurantPickerPage(Math.min(totalRestaurantPages - 1, restaurantPickerPage + 1))}
                     disabled={restaurantPickerPage >= totalRestaurantPages - 1}
                   >
                     <Text style={styles.paginationButtonText}>Siguiente</Text>
@@ -1393,74 +1381,43 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   paginationControls: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginTop: 15,
+    marginBottom: 10
   },
   paginationButton: {
-    backgroundColor: "#0A16D6",
+    backgroundColor: '#0A16D6',
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderRadius: 5,
+    minWidth: 100,
+    alignItems: 'center'
   },
   paginationButtonDisabled: {
-    backgroundColor: "#cccccc",
+    backgroundColor: '#ccc'
   },
   paginationButtonText: {
-    color: "white",
-    fontWeight: "500",
+    color: '#fff',
+    fontWeight: 'bold'
   },
-  paginationInfo: {
-    fontSize: 14,
-    color: "#666",
-  },
-  noRestaurantsContainer: {
-    padding: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  noRestaurantsText: {
-    fontSize: 16,
-    color: "#666",
-    textAlign: "center",
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
+  registerButton: {
+    marginTop: 10,
+    backgroundColor: "#444",
+    paddingVertical: 5,
     paddingHorizontal: 10,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    borderRadius: 5,
+    alignItems: "center",
+    marginHorizontal: 100,
   },
-  searchInput: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingLeft: 5,
-    fontSize: 16,
-    color: "#333",
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  clearSearchButton: {
-    padding: 8,
-  },
-  restaurantTextContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  editModeResponsibilityText: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 2,
-    fontStyle: "italic",
-  },
-})
+  registerButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white"
+  }
+});
 
-export default Profile
+export default Profile;
 
