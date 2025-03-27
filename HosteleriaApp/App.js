@@ -52,7 +52,12 @@ export default function App() {
                         component={JoviatScreen}
                         options={{ headerShown: false }}
                     />
-                    <Stack.Screen name="Register" component={RegisterScreen} />
+                    <Stack.Screen 
+                        name="Register"
+                        component={RegisterScreen} 
+                        
+                    />
+                    
                 </Stack.Navigator>
             </NavigationContainer>
         </AuthProvider>

@@ -4,31 +4,44 @@ import {
   View,
   StyleSheet,
   TextInput,
-  Button,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import RestaurantInfoCard from "../Components/RestaurantInfoCard/RestaurantInfoCard";
 import Navbar from "../Components/Navbar/Navbar";
 import { Ionicons } from "@expo/vector-icons";
-import { auth } from "../Components/FirebaseConfig";
+import { auth, db } from "../Components/FirebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSecured, setSecured] = useState(true);
   const [loginResult, setLoginResult] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password.trim());
-      console.log("Usuario logueado con exito");
-      setLoginResult(true);
-      //Navegar al homescreen
-      navigation.navigate("Home");
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password.trim());
+      const user = userCredential.user;
+  
+      // Get user data from Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        console.log("Usuario logueado con exito");
+        setLoginResult(true);
+        // Navigate to Profile screen
+        navigation.navigate("Profile");
+      } else {
+        console.log("User document not found");
+        setLoginResult(false);
+      }
     } catch (error) {
-      //console.error("Error en el inicio de sesion: ", error.message);
+      console.error("Error en el inicio de sesion: ", error.message);
       setLoginResult(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,6 +72,9 @@ const LoginScreen = ({ navigation }) => {
           )}
           {loginResult === true && (
             <Text style={styles.loginValid}>Estàs loguejat.</Text>
+          )}
+          {isLoading && (
+            <ActivityIndicator size="large" color="#000" style={styles.loader} />
           )}
           <Text style={styles.correuElectronic}>CORREU ELECTRÒNIC:</Text>
           <View style={styles.inputBox}>
@@ -94,9 +110,13 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity>
             <Text style={styles.loremIpsum}>Heu oblidat la contrasenya?</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <TouchableOpacity 
+            style={[styles.button, isLoading && styles.buttonDisabled]} 
+            onPress={handleLogin}
+            disabled={isLoading}
+          >
             <Text style={{ fontSize: 18, fontWeight: "bold", color: "white" }}>
-              Enviar
+              {isLoading ? "Carregant..." : "Enviar"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -181,7 +201,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
   },
-
   button: {
     marginTop: 25,
     backgroundColor: "#444",
@@ -191,6 +210,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 100,
   },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
   group: {
     justifyContent: "center",
     marginLeft: 20,
@@ -198,21 +220,21 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+    marginLeft: 25,
   },
   loginError: {
     color: "red",
-    fontSize: 14,
-    top: 25,
-    position: "absolute",
+    textAlign: "center",
+    marginTop: 10,
   },
   loginValid: {
     color: "green",
-    fontSize: 14,
-    top: 25,
-    position: "absolute",
+    textAlign: "center",
+    marginTop: 10,
+  },
+  loader: {
+    marginTop: 10,
   },
 });
 

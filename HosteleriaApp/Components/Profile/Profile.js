@@ -68,6 +68,8 @@ const Profile = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const [isVerified, setIsVerified] = useState(null)
   const [isCheckingVerification, setIsCheckingVerification] = useState(true)
+  const [isRejected, setIsRejected] = useState(false)
+  const [rejectionReason, setRejectionReason] = useState("")
 
   // Función para cargar los restaurantes desde Firebase
   const fetchRestaurants = async () => {
@@ -388,30 +390,43 @@ const Profile = () => {
           // First check if user exists in regular users collection
           const userRef = doc(db, "users", currentUser.uid)
           const userDoc = await getDoc(userRef)
-
+      
           if (userDoc.exists()) {
             const userData = userDoc.data()
             setUserData(userData)
-
-            // Check if user is in AltaUsers collection
-            const altaUsersQuery = collection(db, "AltaUsers")
-            const q = query(altaUsersQuery, where("userId", "==", currentUser.uid))
-            const altaUsersSnapshot = await getDocs(q)
-
-            // If user is in AltaUsers collection, they need verification
-            if (!altaUsersSnapshot.empty) {
+      
+            // Check if user is in RechazarUser collection
+            const rechazarUsersQuery = collection(db, "RechazarUser")
+            const q = query(rechazarUsersQuery, where("userId", "==", currentUser.uid))
+            const rechazarUsersSnapshot = await getDocs(q)
+      
+            if (!rechazarUsersSnapshot.empty) {
+              // User is rejected
+              setIsRejected(true)
               setIsVerified(false)
+              const rejectedUserData = rechazarUsersSnapshot.docs[0].data()
+              setRejectionReason(rejectedUserData.rejectionReason || "No se ha proporcionado un motivo")
             } else {
-              // User is not in AltaUsers, so they don't need verification
-              setIsVerified(true)
+              // Check if user is in AltaUsers collection
+              const altaUsersQuery = collection(db, "AltaUsers")
+              const altaQ = query(altaUsersQuery, where("userId", "==", currentUser.uid))
+              const altaUsersSnapshot = await getDocs(altaQ)
+      
+              if (!altaUsersSnapshot.empty) {
+                setIsVerified(false)
+                setIsRejected(false)
+              } else {
+                setIsVerified(true)
+                setIsRejected(false)
+              }
             }
-
+      
             if (userData.imageUrl) {
               setImage(userData.imageUrl)
             }
             if (userData.restaurants) {
               setSelectedRestaurants(userData.restaurants)
-
+      
               // Initialize restaurant images from the data
               const images = {}
               userData.restaurants.forEach((restaurant) => {
@@ -582,12 +597,23 @@ const Profile = () => {
         <Navbar showGoBack={false} showLogIn={false} showSearch={false} text="Perfil" screen="Profile" />
         <View style={styles.verificationContainer}>
           <View style={styles.verificationContent}>
-            <ActivityIndicator size="large" color="#0A16D6" style={styles.verificationSpinner} />
-            <Text style={styles.verificationTitle}>Esperando verificación</Text>
-            <Text style={styles.verificationText}>
-              Tu cuenta está pendiente de verificación por parte del administrador.
-            </Text>
-            <Text style={styles.verificationText}>Recibirás acceso completo una vez que tu cuenta sea verificada.</Text>
+            {isRejected ? (
+              <>
+                <FontAwesome5 name="times-circle" size={50} color="#FF0000" style={styles.verificationIcon} />
+                <Text style={[styles.verificationTitle, { color: '#FF0000' }]}>Solicitud Rechazada</Text>
+                <Text style={styles.verificationText}>Has sido rechazado por este motivo:</Text>
+                <Text style={[styles.verificationText, { fontStyle: 'italic', fontWeight: 'bold' }]}>{rejectionReason}</Text>
+              </>
+            ) : (
+              <>
+                <ActivityIndicator size="large" color="#0A16D6" style={styles.verificationSpinner} />
+                <Text style={styles.verificationTitle}>Esperando verificación</Text>
+                <Text style={styles.verificationText}>
+                  Tu cuenta está pendiente de verificación por parte del administrador.
+                </Text>
+                <Text style={styles.verificationText}>Recibirás acceso completo una vez que tu cuenta sea verificada.</Text>
+              </>
+            )}
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogOut}>
               <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
             </TouchableOpacity>
@@ -629,7 +655,7 @@ const Profile = () => {
               <Text style={styles.botonText}>Inicia sessió</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.boton} onPress={() => navigation.navigate("RegisterScreen")}>
+            <TouchableOpacity style={styles.boton} onPress={() => navigation.navigate("Register")}>
               <Text style={styles.botonText}>Register</Text>
             </TouchableOpacity>
           </View>
@@ -674,137 +700,183 @@ const Profile = () => {
 
         {/* Username */}
         <View style={styles.infoContainer}>
-          <Text style={styles.label}>Nom d'usuari:</Text>
-          {editMode ? (
-            <TextInput
-              style={styles.input}
-              value={userData ? userData.username : ""}
-              onChangeText={(text) => setUserData({ ...userData, username: text })}
-            />
-          ) : (
-            <Text style={styles.value}>{userData ? userData.username : ""}</Text>
-          )}
+          <View style={styles.labelWithIcon}>
+            <View style={styles.iconPlaceholder}></View>
+            <Text style={styles.label}>Nom d'usuari:</Text>
+          </View>
+          <View style={styles.valueContainer}>
+            {editMode ? (
+              <TextInput
+                style={styles.input}
+                value={userData ? userData.username : ""}
+                onChangeText={(text) => setUserData({ ...userData, username: text })}
+                placeholder="Nom d'usuari"
+              />
+            ) : (
+              <Text style={styles.value}>{userData ? userData.username : ""}</Text>
+            )}
+          </View>
         </View>
 
         {/* Birth date */}
         <View style={styles.infoContainer}>
-          <Text style={styles.label}>Data de naixement:</Text>
-          {editMode ? (
-            <View style={styles.dateInputContainer}>
-              <TextInput
-                style={[styles.input, { flex: 1 }]}
-                value={userData?.birth || ""}
-                editable={false}
-                placeholder=""
-              />
-              <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)} style={styles.calendarIcon}>
-                <FontAwesome5 name="calendar-alt" size={24} color="#0A16D6" />
-              </TouchableOpacity>
-              {showCalendar && (
-                <View style={styles.calendarContainer}>
-                  <Calendar
-                    onDayPress={(day) => {
-                      const formattedDate = formatDate(day.dateString)
-                      setUserData({ ...userData, birth: formattedDate })
-                      setSelectedDate(day.dateString)
-                      setShowCalendar(false)
-                    }}
-                    markedDates={{
-                      [selectedDate]: { selected: true, selectedColor: "#0A16D6" },
-                    }}
-                    style={styles.calendar}
-                    theme={{
-                      selectedDayBackgroundColor: "#0A16D6",
-                      todayTextColor: "#0A16D6",
-                      arrowColor: "#0A16D6",
-                    }}
-                  />
-                </View>
-              )}
-            </View>
-          ) : (
-            <Text style={styles.value}>{userData ? userData.birth : ""}</Text>
-          )}
+          <View style={styles.labelWithIcon}>
+            <FontAwesome5 name="birthday-cake" size={20} color="#FF69B4" style={styles.iconStyle} />
+            <Text style={styles.label}>Data de naixement:</Text>
+          </View>
+          <View style={styles.valueContainer}>
+            {editMode ? (
+              <View style={styles.dateInputContainer}>
+                <TextInput
+                  style={[styles.input, { flex: 1 }]}
+                  value={userData?.birth || ""}
+                  editable={false}
+                  placeholder=""
+                />
+                <TouchableOpacity onPress={() => setShowCalendar(!showCalendar)} style={styles.calendarIcon}>
+                  <FontAwesome5 name="calendar-alt" size={24} color="#0A16D6" />
+                </TouchableOpacity>
+                {showCalendar && (
+                  <View style={styles.calendarContainer}>
+                    <Calendar
+                      onDayPress={(day) => {
+                        const formattedDate = formatDate(day.dateString)
+                        setUserData({ ...userData, birth: formattedDate })
+                        setSelectedDate(day.dateString)
+                        setShowCalendar(false)
+                      }}
+                      markedDates={{
+                        [selectedDate]: { selected: true, selectedColor: "#0A16D6" },
+                      }}
+                      style={styles.calendar}
+                      theme={{
+                        selectedDayBackgroundColor: "#0A16D6",
+                        todayTextColor: "#0A16D6",
+                        arrowColor: "#0A16D6",
+                      }}
+                    />
+                  </View>
+                )}
+              </View>
+            ) : (
+              <Text style={styles.value}>{userData ? userData.birth : ""}</Text>
+            )}
+          </View>
         </View>
 
         {/* Academic status section */}
-        <View style={styles.academicSection}>
-          <View style={styles.infoContainer}>
-            <Text style={editMode ? styles.labelEstat : styles.label}>Estat acadèmic:</Text>
-            <Text style={styles.value}>{userData ? userData.academicStatus : "Alumne"}</Text>
+        <View style={styles.infoContainer}>
+          <View style={styles.labelWithIcon}>
+            <FontAwesome5 name="graduation-cap" size={20} color="#4B0082" style={styles.iconStyle} />
+            <Text style={styles.label}>Estat acadèmic:</Text>
+          </View>
+          <View style={styles.valueContainer}>
+            {editMode ? (
+              <View style={styles.academicStatusToggle}>
+                <TouchableOpacity
+                  style={[
+                    styles.academicStatusOption,
+                    userData?.academicStatus === "Alumne" && styles.academicStatusOptionSelected
+                  ]}
+                  onPress={() => setUserData({ ...userData, academicStatus: "Alumne" })}
+                >
+                  <Text style={styles.academicStatusOptionText}>Alumne</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.academicStatusOption,
+                    userData?.academicStatus === "Ex-alumne" && styles.academicStatusOptionSelected
+                  ]}
+                  onPress={() => setUserData({ ...userData, academicStatus: "Ex-alumne" })}
+                >
+                  <Text style={styles.academicStatusOptionText}>Ex-alumne</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Text style={styles.value}>{userData?.academicStatus || "Alumne"}</Text>
+            )}
           </View>
         </View>
 
         {/* Instagram field */}
         <View style={styles.infoContainer}>
-          <Text style={styles.label}>
-            <FontAwesome name="instagram" size={20} color="#C13584" /> Instagram:
-          </Text>
-          {editMode ? (
-            <TextInput
-              style={styles.input}
-              value={userData?.instagram || ""}
-              onChangeText={(text) => setUserData({ ...userData, instagram: text })}
-              placeholder="@username"
-            />
-          ) : userData?.instagram ? (
-            <TouchableOpacity onPress={() => openLink(`https://instagram.com/${userData.instagram.replace("@", "")}`)}>
-              <Text style={styles.socialValue}>{userData.instagram}</Text>
-            </TouchableOpacity>
-          ) : (
-            <Text style={styles.value}>No disponible</Text>
-          )}
+          <View style={styles.labelWithIcon}>
+            <FontAwesome name="instagram" size={20} color="#C13584" style={styles.iconStyle} />
+            <Text style={styles.label}>Instagram:</Text>
+          </View>
+          <View style={styles.valueContainer}>
+            {editMode ? (
+              <TextInput
+                style={styles.input}
+                value={userData?.instagram || ""}
+                onChangeText={(text) => setUserData({ ...userData, instagram: text })}
+                placeholder="@username"
+              />
+            ) : userData?.instagram ? (
+              <TouchableOpacity onPress={() => openLink(`https://instagram.com/${userData.instagram.replace("@", "")}`)}>
+                <Text style={styles.socialValue}>{userData.instagram}</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={styles.value}>No disponible</Text>
+            )}
+          </View>
         </View>
 
         {/* LinkedIn field */}
         <View style={styles.infoContainer}>
-          <Text style={styles.label}>
-            <FontAwesome5 name="linkedin" size={20} color="#0077B5" /> LinkedIn:
-          </Text>
-          {editMode ? (
-            <TextInput
-              style={styles.input}
-              value={userData?.linkedin || ""}
-              onChangeText={(text) => setUserData({ ...userData, linkedin: text })}
-              placeholder="URL o username"
-            />
-          ) : userData?.linkedin ? (
-            <TouchableOpacity
-              onPress={() =>
-                openLink(
-                  userData.linkedin.includes("http")
-                    ? userData.linkedin
-                    : `https://linkedin.com/in/${userData.linkedin}`,
-                )
-              }
-            >
-              <Text style={styles.socialValue}>{userData.linkedin}</Text>
-            </TouchableOpacity>
-          ) : (
-            <Text style={styles.value}>No disponible</Text>
-          )}
+          <View style={styles.labelWithIcon}>
+            <FontAwesome5 name="linkedin" size={20} color="#0077B5" style={styles.iconStyle} />
+            <Text style={styles.label}>LinkedIn:</Text>
+          </View>
+          <View style={styles.valueContainer}>
+            {editMode ? (
+              <TextInput
+                style={styles.input}
+                value={userData?.linkedin || ""}
+                onChangeText={(text) => setUserData({ ...userData, linkedin: text })}
+                placeholder="URL o username"
+              />
+            ) : userData?.linkedin ? (
+              <TouchableOpacity
+                onPress={() =>
+                  openLink(
+                    userData.linkedin.includes("http")
+                      ? userData.linkedin
+                      : `https://linkedin.com/in/${userData.linkedin}`,
+                  )
+                }
+              >
+                <Text style={styles.socialValue}>{userData.linkedin}</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={styles.value}>No disponible</Text>
+            )}
+          </View>
         </View>
 
         {/* Mobile phone field */}
         <View style={styles.infoContainer}>
-          <Text style={styles.label}>
-            <FontAwesome5 name="mobile-alt" size={20} color="#34B7F1" /> Telèfon mòbil:
-          </Text>
-          {editMode ? (
-            <TextInput
-              style={styles.input}
-              value={userData?.mobilePhone || ""}
-              onChangeText={(text) => setUserData({ ...userData, mobilePhone: text })}
-              placeholder="+34 000 000 000"
-              keyboardType="phone-pad"
-            />
-          ) : userData?.mobilePhone ? (
-            <TouchableOpacity onPress={() => Linking.openURL(`tel:${userData.mobilePhone}`)}>
-              <Text style={styles.socialValue}>{userData.mobilePhone}</Text>
-            </TouchableOpacity>
-          ) : (
-            <Text style={styles.value}>No disponible</Text>
-          )}
+          <View style={styles.labelWithIcon}>
+            <FontAwesome5 name="mobile-alt" size={20} color="#34B7F1" style={styles.iconStyle} />
+            <Text style={styles.label}>Telèfon mòbil:</Text>
+          </View>
+          <View style={styles.valueContainer}>
+            {editMode ? (
+              <TextInput
+                style={styles.input}
+                value={userData?.mobilePhone || ""}
+                onChangeText={(text) => setUserData({ ...userData, mobilePhone: text })}
+                placeholder="+34 000 000 000"
+                keyboardType="phone-pad"
+              />
+            ) : userData?.mobilePhone ? (
+              <TouchableOpacity onPress={() => Linking.openURL(`tel:${userData.mobilePhone}`)}>
+                <Text style={styles.socialValue}>{userData.mobilePhone}</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={styles.value}>No disponible</Text>
+            )}
+          </View>
         </View>
 
         {/* Restaurant list section */}
@@ -1047,11 +1119,13 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 18,
+    paddingLeft: 15,
   },
   socialValue: {
     fontSize: 18,
     color: "#0A16D6",
     textDecorationLine: "underline",
+    paddingLeft: 15,
   },
   content: {
     flexGrow: 1,
@@ -1069,15 +1143,33 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
     alignItems: "center",
     padding: 8,
     width: "100%",
+    justifyContent: "space-between",
+  },
+  labelWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: "35%",
+    paddingRight: 10,
+  },
+  valueContainer: {
+    flex: 1,
+    alignItems: "flex-start",
+  },
+  iconStyle: {
+    width: 24,
+    textAlign: 'center',
+    marginRight: 8,
+  },
+  iconPlaceholder: {
+    width: 24,
+    marginRight: 8,
   },
   label: {
     fontWeight: "bold",
     fontSize: 18,
-    minWidth: 120,
   },
   labelEstat: {
     fontWeight: "bold",
@@ -1094,11 +1186,43 @@ const styles = StyleSheet.create({
   },
   input: {
     borderBottomWidth: 1,
-    marginLeft: 10,
     color: "#0A16D6",
-    fontSize: 20,
-    paddingRight: 40,
-    minWidth: 150,
+    fontSize: 18,
+    paddingVertical: 4,
+    minWidth: "90%",
+    backgroundColor: "#fff",
+    paddingLeft: 15,
+  },
+  academicStatusToggle: {
+    flexDirection: 'row',
+    marginLeft: 15,
+    marginTop: 5,
+  },
+  academicStatusOption: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  academicStatusOptionSelected: {
+    backgroundColor: '#0A16D6',
+    borderColor: '#0A16D6',
+  },
+  academicStatusOptionText: {
+    fontSize: 16,
+    color: '#c6c3c3',
+  },
+  pickerContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    minWidth: "90%",
+  },
+  pickerStyle: {
+    color: "#0A16D6",
+    height: 40,
+    width: "100%",
   },
   profileImage: {
     width: 150,
@@ -1282,6 +1406,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     position: "relative",
+    marginLeft: 15,
   },
   calendarIcon: {
     padding: 10,
@@ -1543,7 +1668,38 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     marginTop: 2,
   },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+  },
+  clearSearchButton: {
+    padding: 8,
+  },
+  noRestaurantsContainer: {
+    padding: 20,
+    alignItems: "center",
+  },
+  noRestaurantsText: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+  },
+  paginationInfo: {
+    fontSize: 14,
+    color: "#666",
+  },
 })
 
 export default Profile
-

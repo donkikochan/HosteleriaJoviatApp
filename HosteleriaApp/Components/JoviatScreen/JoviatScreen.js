@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
   ScrollView,
   Text,
-  TouchableOpacity,
 } from "react-native";
 import Navbar from "../Navbar/Navbar";
 import FooterNavbar from "../FooterNavbar/FooterNavbar";
 import CarouselDef from "../Carousel/CaroselDef";
 import RestaurantInfoCard from "../RestaurantInfoCard/RestaurantInfoCard";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import ItemDev from "./ItemDev";
 
@@ -21,7 +19,7 @@ function JoviatScreen() {
   return (
     <View style={styles.container}>
       <Navbar
-        showGoBack={true}
+        showGoBack={false}
         showLogIn={false}
         showSearch={false}
         text="Login"
@@ -141,6 +139,6 @@ const styles = StyleSheet.create({
     width: "15%",
     alignSelf: "flex-end",
     right: 25,
-  },
+  }
 });
 export default JoviatScreen;
