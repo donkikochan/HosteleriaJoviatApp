@@ -701,7 +701,13 @@ const Profile = () => {
         {/* Username */}
         <View style={styles.infoContainer}>
           <View style={styles.labelWithIcon}>
-            <View style={styles.iconPlaceholder}></View>
+            <View style={styles.iconContainer}>
+              <FontAwesome5 
+                name="user" 
+                color="#666" // Neutral gray color
+                size={20} // Adjust size as needed
+              />
+            </View>
             <Text style={styles.label}>Nom d'usuari:</Text>
           </View>
           <View style={styles.valueContainer}>
@@ -1153,6 +1159,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: "35%",
     paddingRight: 10,
+  },
+  iconContainer: {
+    marginRight: 10, // Space between icon and label
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 25, // Ensure consistent width
   },
   valueContainer: {
     flex: 1,

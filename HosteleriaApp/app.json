@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "HosteleriaApp",
-    "slug": "HosteleriaApp",
+    "slug": "hosteleriajoviatapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
@@ -39,12 +39,13 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/a2940bb7-ee42-4a12-ad3d-25dd3fb5fe58"
+      "url": "https://u.expo.dev/0a37fd79-a6ff-45cc-aa8a-67a8eb29b07d"
     },
     "extra": {
       "eas": {
-        "projectId": "a2940bb7-ee42-4a12-ad3d-25dd3fb5fe58"
+        "projectId": "0a37fd79-a6ff-45cc-aa8a-67a8eb29b07d"
       }
-    }
+    },
+    "owner": "bguilanya"
   }
 }

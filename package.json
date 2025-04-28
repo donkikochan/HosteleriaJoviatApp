@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.22.2"
+    "@react-native-async-storage/async-storage": "^1.22.2",
+    "expo-updates": "~0.27.4"
   }
 }

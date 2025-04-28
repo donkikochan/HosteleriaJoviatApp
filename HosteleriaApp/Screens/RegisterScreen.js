@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Platform, Alert } from "react-native"
 import Navbar from "../Components/Navbar/Navbar"
 import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons"
@@ -28,6 +28,13 @@ const RegisterScreen = ({ navigation }) => {
   const [dateOfBirth, setDateOfBirth] = useState(new Date())
   const [showDatePicker, setShowDatePicker] = useState(false)
 
+  // Add refs for TextInput components
+  const nombreRef = useRef(null)
+  const apellidosRef = useRef(null)
+  const emailRef = useRef(null)
+  const passwordRef = useRef(null)
+  const instagramRef = useRef(null)
+  const mobilePhoneRef = useRef(null)
   const handleRegister = async () => {
     // Validate required fields
     if (!email || !password || !nombre || !apellidos) {
@@ -80,12 +87,48 @@ const RegisterScreen = ({ navigation }) => {
 
       // Navigate to Profile screen instead of Home
       setTimeout(() => {
-        navigation.navigate("Profile")
+        navigation.navigate("Volver")
       }, 1500)
     } catch (error) {
       console.error("Error al registrar:", error)
       setRegisterResult(false)
-      Alert.alert("Error", "No se pudo completar el registro. Por favor, inténtalo de nuevo.")
+      
+      // Handle specific Firebase errors
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          Alert.alert(
+            "Email ya registrado",
+            "Este correo electrónico ya está registrado. Por favor, utiliza otro correo o inicia sesión si ya tienes una cuenta.",
+            [
+              {
+                text: "Iniciar sesión",
+                onPress: () => navigation.navigate("Login")
+              },
+              {
+                text: "OK",
+                style: "cancel"
+              }
+            ]
+          )
+          break
+        case "auth/invalid-email":
+          Alert.alert(
+            "Email inválido",
+            "Por favor, introduce una dirección de correo electrónico válida."
+          )
+          break
+        case "auth/weak-password":
+          Alert.alert(
+            "Contraseña débil",
+            "La contraseña debe tener al menos 6 caracteres."
+          )
+          break
+        default:
+          Alert.alert(
+            "Error de registro",
+            "Ha ocurrido un error durante el registro. Por favor, inténtalo de nuevo."
+          )
+      }
     } finally {
       setIsLoading(false)
     }
@@ -187,8 +230,22 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Navbar showGoBack={true} showLogIn={false} showSearch={false} text="Inici" screen="Home" />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      {/* Header area with back arrow */}
+      <View style={styles.headerArea}>
+        <TouchableOpacity 
+          style={styles.backArrow} 
+          onPress={() => navigation.navigate("Profile")}
+        >
+          <Ionicons name="arrow-back" size={28} color="black" />
+        </TouchableOpacity>
+        <Navbar showGoBack={false} showLogIn={false} showSearch={false} text="Inici" screen="Home" />
+      </View>
+      
+      {/* Content area */}
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContainer}
+      >
         <View style={styles.rect}>
           <View style={styles.group}>
             <View style={styles.rect2}>
@@ -222,7 +279,7 @@ const RegisterScreen = ({ navigation }) => {
             </View>
 
             {/* Nombre */}
-            <Text style={styles.label}>NOMBRE:</Text>
+            <Text style={styles.label}>NOM:</Text>
             <View style={styles.inputBox}>
               <FontAwesome name="user" size={25} color="black" />
               <TextInput
@@ -231,11 +288,14 @@ const RegisterScreen = ({ navigation }) => {
                 style={styles.input}
                 value={nombre}
                 onChangeText={setNombre}
+                ref={nombreRef}
+                returnKeyType="next"
+                onSubmitEditing={() => apellidosRef.current?.focus()}
               />
             </View>
 
             {/* Apellidos */}
-            <Text style={styles.label}>APELLIDOS:</Text>
+            <Text style={styles.label}>COGNOMS:</Text>
             <View style={styles.inputBox}>
               <FontAwesome name="user" size={25} color="black" />
               <TextInput
@@ -244,6 +304,9 @@ const RegisterScreen = ({ navigation }) => {
                 style={styles.input}
                 value={apellidos}
                 onChangeText={setApellidos}
+                ref={apellidosRef}
+                returnKeyType="next"
+                onSubmitEditing={() => emailRef.current?.focus()}
               />
             </View>
 
@@ -259,6 +322,9 @@ const RegisterScreen = ({ navigation }) => {
                 onChangeText={setEmail}
                 autoCapitalize="none"
                 keyboardType="email-address"
+                ref={emailRef}
+                returnKeyType="next"
+                onSubmitEditing={() => passwordRef.current?.focus()}
               />
             </View>
 
@@ -276,6 +342,9 @@ const RegisterScreen = ({ navigation }) => {
                 value={password}
                 onChangeText={setPassword}
                 autoCapitalize="none"
+                ref={passwordRef}
+                returnKeyType="next"
+                onSubmitEditing={() => instagramRef.current?.focus()}
               />
             </View>
 
@@ -290,11 +359,14 @@ const RegisterScreen = ({ navigation }) => {
                 value={instagram}
                 onChangeText={setInstagram}
                 autoCapitalize="none"
+                ref={instagramRef}
+                returnKeyType="next"
+                onSubmitEditing={() => mobilePhoneRef.current?.focus()}
               />
             </View>
 
             {/* Mobile Phone */}
-            <Text style={styles.label}>TELÉFONO MÓVIL:</Text>
+            <Text style={styles.label}>TELÈFON MÒBIL:</Text>
             <View style={styles.inputBox}>
               <FontAwesome name="phone" size={25} color="black" />
               <TextInput
@@ -304,11 +376,14 @@ const RegisterScreen = ({ navigation }) => {
                 value={mobilePhone}
                 onChangeText={setMobilePhone}
                 keyboardType="phone-pad"
+                ref={mobilePhoneRef}
+                returnKeyType="done"
+                onSubmitEditing={handleRegister}
               />
             </View>
 
             {/* Date of Birth */}
-            <Text style={styles.label}>FECHA DE NACIMIENTO:</Text>
+            <Text style={styles.label}>DATA DE NAIXEMENT:</Text>
             <View style={styles.dateContainer}>
               <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
                 <FontAwesome name="calendar" size={20} color="#fff" />
@@ -354,8 +429,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
+  headerArea: {
+    position: 'relative',
+    width: '100%',
+    zIndex: 10,
+    height: 70, // Set a fixed height for the header area
+  },
+  backArrow: {
+    position: 'absolute',
+    top: 110,
+    left: 15,
+    zIndex: 999,
+    padding: 8, 
+  },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
   scrollContainer: {
-    flexGrow: 1,
+    paddingTop: 20, // Add padding at the top of the scroll container
     paddingBottom: 30,
     alignItems: "center",
   },
@@ -363,7 +455,7 @@ const styles = StyleSheet.create({
     width: "90%",
     backgroundColor: "#E6E6E6",
     borderRadius: 9,
-    marginTop: 120,
+    marginTop: 60, // Increased margin to push the form down
     paddingBottom: 20,
     shadowColor: "#000",
     shadowOffset: {
@@ -529,4 +621,3 @@ const styles = StyleSheet.create({
 })
 
 export default RegisterScreen
-
