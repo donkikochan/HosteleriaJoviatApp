@@ -1,6 +1,5 @@
 import { useState, useRef } from "react"
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Platform, Alert, KeyboardAvoidingView } from "react-native"
-import Navbar from "../Components/Navbar/Navbar"
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Platform, Alert, KeyboardAvoidingView, SafeAreaView } from "react-native"
 import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons"
 import { auth, db } from "../Components/FirebaseConfig"
 import { createUserWithEmailAndPassword } from "firebase/auth"
@@ -84,9 +83,9 @@ const RegisterScreen = ({ navigation }) => {
       console.log("Usuario registrado con éxito en AltaUsers")
       setRegisterResult(true)
 
-      // Navigate to Profile screen instead of Home
+      // Navigate back to previous screen
       setTimeout(() => {
-        navigation.navigate("Volver")
+        navigation.goBack()
       }, 1500)
     } catch (error) {
       console.error("Error al registrar:", error)
@@ -236,28 +235,17 @@ const RegisterScreen = ({ navigation }) => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-    >
-      <View style={styles.container}>
-        {/* Header area with back arrow */}
-        <View style={styles.headerArea}>
-          <TouchableOpacity 
-            style={styles.backArrow} 
-            onPress={() => navigation.navigate("Profile")}
-          >
-            <Ionicons name="arrow-back" size={28} color="black" />
-          </TouchableOpacity>
-          <Navbar showGoBack={false} showLogIn={false} showSearch={false} text="Inici" screen="Home" />
-        </View>
-
-        {/* Content area */}
+    <SafeAreaView style={styles.mainContainer}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+      >
         <ScrollView 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.rect}>
             <View style={styles.group}>
@@ -346,7 +334,7 @@ const RegisterScreen = ({ navigation }) => {
                   style={styles.inputField}
                   value={password}
                   onChangeText={setPassword}
-                  onSubmitEditing={() => instagramRef.current.focus()}  // Elimina el comentario aquí
+                  onSubmitEditing={() => instagramRef.current.focus()}
                   ref={passwordRef}
                 />
                 <TouchableOpacity onPress={handlePass} style={styles.passwordToggle}>
@@ -410,47 +398,33 @@ const RegisterScreen = ({ navigation }) => {
             </View>
           </View>
         </ScrollView>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
-    paddingTop: 50,
-  },
-  headerArea: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  backArrow: {
-    padding: 10,
+    backgroundColor: 'white',
   },
   scrollView: {
     flex: 1,
-    padding: 20,
+    backgroundColor: 'white',
   },
   scrollContainer: {
-    paddingBottom: 20,
+    padding: 20,
+    paddingBottom: 40,
   },
   rect: {
-    padding: 20,
     backgroundColor: "white",
     borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   group: {
-    marginBottom: 20,
+    width: "100%",
   },
   rect2: {
-    marginBottom: 20,
+    marginTop: Platform.OS === 'ios' ? 0 : 0,
   },
   headerContainer: {
     alignItems: "center",
@@ -519,10 +493,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   dateButton: {
-    backgroundColor: "#ddd",
-    padding: 10,
+    backgroundColor: "#f0f0f0",
+    padding: 15,
     marginBottom: 20,
     borderRadius: 5,
+    alignItems: "center",
   },
   dateButtonText: {
     fontSize: 16,
@@ -533,11 +508,24 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: "center",
+    marginBottom: 15,
   },
   submitButtonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  backToProfileButton: {
+    borderWidth: 1,
+    borderColor: "#007bff",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  backToProfileText: {
+    color: "#007bff",
+    fontSize: 16,
+    fontWeight: "500",
   },
   loginError: {
     color: "red",
