@@ -144,9 +144,12 @@ const RegisterScreen = ({ navigation }) => {
   }
 
   const onDateChange = (event, selectedDate) => {
-    const currentDate = selectedDate || dateOfBirth
-    setShowDatePicker(Platform.OS === "ios")
-    setDateOfBirth(currentDate)
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false)
+    }
+    if (selectedDate) {
+      setDateOfBirth(selectedDate)
+    }
   }
 
   const pickImage = async () => {
@@ -284,7 +287,7 @@ const RegisterScreen = ({ navigation }) => {
               <View style={styles.inputBox}>
                 <FontAwesome name="user" size={25} color="black" />
                 <TextInput
-                  placeholder="Nombre"
+                  placeholder="Nom"
                   maxLength={30}
                   style={styles.inputField}
                   value={nombre}
@@ -299,7 +302,7 @@ const RegisterScreen = ({ navigation }) => {
               <View style={styles.inputBox}>
                 <FontAwesome name="user" size={25} color="black" />
                 <TextInput
-                  placeholder="Apellidos"
+                  placeholder="Cognoms"
                   maxLength={50}
                   style={styles.inputField}
                   value={apellidos}
@@ -314,7 +317,7 @@ const RegisterScreen = ({ navigation }) => {
               <View style={styles.inputBox}>
                 <Ionicons name="mail" size={25} color="black" />
                 <TextInput
-                  placeholder="Correo electrónico"
+                  placeholder="Correu electrònic"
                   style={styles.inputField}
                   keyboardType="email-address"
                   value={email}
@@ -329,7 +332,7 @@ const RegisterScreen = ({ navigation }) => {
               <View style={styles.inputBox}>
                 <FontAwesome name="lock" size={25} color="black" />
                 <TextInput
-                  placeholder="Contraseña"
+                  placeholder="Contrasenya"
                   secureTextEntry={isSecured}
                   style={styles.inputField}
                   value={password}
@@ -361,7 +364,7 @@ const RegisterScreen = ({ navigation }) => {
               <View style={styles.inputBox}>
                 <FontAwesome name="phone" size={25} color="black" />
                 <TextInput
-                  placeholder="Teléfono móvil"
+                  placeholder="Telèfon mòbil"
                   style={styles.inputField}
                   keyboardType="phone-pad"
                   value={mobilePhone}
@@ -371,19 +374,23 @@ const RegisterScreen = ({ navigation }) => {
                 />
               </View>
 
-              {/* Date Picker */}
+              {/* Date of Birth Section */}
+              <Text style={styles.label}>DATA DE NAIXEMENT:</Text>
               <TouchableOpacity style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
-                <Text style={styles.dateButtonText}>
-                  {dateOfBirth ? formatDate(dateOfBirth) : "Fecha de nacimiento"}
-                </Text>
+                <FontAwesome name="calendar" size={20} color="#333" style={styles.dateIcon} />
+                <Text style={styles.dateButtonText}>{formatDate(dateOfBirth)}</Text>
               </TouchableOpacity>
 
+              {/* Date Picker - Only show when needed */}
               {showDatePicker && (
                 <DateTimePicker
+                  testID="dateTimePicker"
                   value={dateOfBirth}
                   mode="date"
-                  display="default"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                   onChange={onDateChange}
+                  style={styles.datePicker}
+                  maximumDate={new Date()}
                 />
               )}
 
@@ -493,15 +500,25 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   dateButton: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#f0f0f0",
     padding: 15,
     marginBottom: 20,
     borderRadius: 5,
-    alignItems: "center",
+    paddingHorizontal: 15,
+  },
+  dateIcon: {
+    marginRight: 10,
   },
   dateButtonText: {
     fontSize: 16,
     color: "#333",
+  },
+  datePicker: {
+    width: '100%',
+    marginBottom: 20,
+    backgroundColor: 'white',
   },
   submitButton: {
     backgroundColor: "#007bff",
@@ -514,18 +531,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-  },
-  backToProfileButton: {
-    borderWidth: 1,
-    borderColor: "#007bff",
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  backToProfileText: {
-    color: "#007bff",
-    fontSize: 16,
-    fontWeight: "500",
   },
   loginError: {
     color: "red",

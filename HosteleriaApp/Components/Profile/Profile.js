@@ -14,6 +14,7 @@ import {
   Modal,
   Linking,
   Alert,
+  Keyboard,
 } from "react-native"
 import { useAuth } from "../../AuthContext"
 import { useNavigation } from "@react-navigation/native"
@@ -127,7 +128,7 @@ const Profile = () => {
     setCurrentRestaurantId(restaurantId)
 
     // Check if the current responsibility matches any predefined type
-    const predefinedTypes = ["Cuiner", "Cambrer", "Gerent", "Nateja"]
+    const predefinedTypes = ["Cuiner", "Cambrer", "Gerent"]
     if (predefinedTypes.includes(currentResponsibility)) {
       setResponsibilityType(currentResponsibility)
       setResponsibility("")
@@ -390,16 +391,16 @@ const Profile = () => {
           // First check if user exists in regular users collection
           const userRef = doc(db, "users", currentUser.uid)
           const userDoc = await getDoc(userRef)
-      
+
           if (userDoc.exists()) {
             const userData = userDoc.data()
             setUserData(userData)
-      
+
             // Check if user is in RechazarUser collection
             const rechazarUsersQuery = collection(db, "RechazarUser")
             const q = query(rechazarUsersQuery, where("userId", "==", currentUser.uid))
             const rechazarUsersSnapshot = await getDocs(q)
-      
+
             if (!rechazarUsersSnapshot.empty) {
               // User is rejected
               setIsRejected(true)
@@ -411,7 +412,7 @@ const Profile = () => {
               const altaUsersQuery = collection(db, "AltaUsers")
               const altaQ = query(altaUsersQuery, where("userId", "==", currentUser.uid))
               const altaUsersSnapshot = await getDocs(altaQ)
-      
+
               if (!altaUsersSnapshot.empty) {
                 setIsVerified(false)
                 setIsRejected(false)
@@ -420,13 +421,13 @@ const Profile = () => {
                 setIsRejected(false)
               }
             }
-      
+
             if (userData.imageUrl) {
               setImage(userData.imageUrl)
             }
             if (userData.restaurants) {
               setSelectedRestaurants(userData.restaurants)
-      
+
               // Initialize restaurant images from the data
               const images = {}
               userData.restaurants.forEach((restaurant) => {
@@ -600,9 +601,11 @@ const Profile = () => {
             {isRejected ? (
               <>
                 <FontAwesome5 name="times-circle" size={50} color="#FF0000" style={styles.verificationIcon} />
-                <Text style={[styles.verificationTitle, { color: '#FF0000' }]}>Solicitud Rechazada</Text>
+                <Text style={[styles.verificationTitle, { color: "#FF0000" }]}>Solicitud Rechazada</Text>
                 <Text style={styles.verificationText}>Has sido rechazado por este motivo:</Text>
-                <Text style={[styles.verificationText, { fontStyle: 'italic', fontWeight: 'bold' }]}>{rejectionReason}</Text>
+                <Text style={[styles.verificationText, { fontStyle: "italic", fontWeight: "bold" }]}>
+                  {rejectionReason}
+                </Text>
               </>
             ) : (
               <>
@@ -611,7 +614,9 @@ const Profile = () => {
                 <Text style={styles.verificationText}>
                   Tu cuenta está pendiente de verificación por parte del administrador.
                 </Text>
-                <Text style={styles.verificationText}>Recibirás acceso completo una vez que tu cuenta sea verificada.</Text>
+                <Text style={styles.verificationText}>
+                  Recibirás acceso completo una vez que tu cuenta sea verificada.
+                </Text>
               </>
             )}
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogOut}>
@@ -702,8 +707,8 @@ const Profile = () => {
         <View style={styles.infoContainer}>
           <View style={styles.labelWithIcon}>
             <View style={styles.iconContainer}>
-              <FontAwesome5 
-                name="user" 
+              <FontAwesome5
+                name="user"
                 color="#666" // Neutral gray color
                 size={20} // Adjust size as needed
               />
@@ -782,7 +787,7 @@ const Profile = () => {
                 <TouchableOpacity
                   style={[
                     styles.academicStatusOption,
-                    userData?.academicStatus === "Alumne" && styles.academicStatusOptionSelected
+                    userData?.academicStatus === "Alumne" && styles.academicStatusOptionSelected,
                   ]}
                   onPress={() => setUserData({ ...userData, academicStatus: "Alumne" })}
                 >
@@ -791,7 +796,7 @@ const Profile = () => {
                 <TouchableOpacity
                   style={[
                     styles.academicStatusOption,
-                    userData?.academicStatus === "Ex-alumne" && styles.academicStatusOptionSelected
+                    userData?.academicStatus === "Ex-alumne" && styles.academicStatusOptionSelected,
                   ]}
                   onPress={() => setUserData({ ...userData, academicStatus: "Ex-alumne" })}
                 >
@@ -819,7 +824,9 @@ const Profile = () => {
                 placeholder="@username"
               />
             ) : userData?.instagram ? (
-              <TouchableOpacity onPress={() => openLink(`https://instagram.com/${userData.instagram.replace("@", "")}`)}>
+              <TouchableOpacity
+                onPress={() => openLink(`https://instagram.com/${userData.instagram.replace("@", "")}`)}
+              >
                 <Text style={styles.socialValue}>{userData.instagram}</Text>
               </TouchableOpacity>
             ) : (
@@ -912,7 +919,7 @@ const Profile = () => {
                         <View style={styles.restaurantTextContainer}>
                           <Text style={styles.selectedRestaurantText}>{restaurant.name}</Text>
                           <Text style={styles.editModeResponsibilityText}>
-                            Responsabilidad: {restaurant.responsibility || ""}
+                            Responsabilitat: {restaurant.responsibility || ""}
                           </Text>
                         </View>
                       </View>
@@ -996,7 +1003,7 @@ const Profile = () => {
             </View>
 
             <View style={styles.responsibilityOptions}>
-              {["Cuiner", "Cambrer", "Gerent", "Nateja", "Altres"].map((option) => (
+              {["Cuiner", "Cambrer", "Gerent", "Altres"].map((option) => (
                 <TouchableOpacity
                   key={option}
                   style={[
@@ -1021,6 +1028,10 @@ const Profile = () => {
                 placeholder="Describe tu responsabilidad aquí"
                 multiline={true}
                 numberOfLines={2}
+                blurOnSubmit={true}
+                onSubmitEditing={() => {
+                  Keyboard.dismiss()
+                }}
               />
             )}
 
@@ -1155,15 +1166,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   labelWithIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     width: "35%",
     paddingRight: 10,
   },
   iconContainer: {
     marginRight: 10, // Space between icon and label
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     width: 25, // Ensure consistent width
   },
   valueContainer: {
@@ -1172,7 +1183,7 @@ const styles = StyleSheet.create({
   },
   iconStyle: {
     width: 24,
-    textAlign: 'center',
+    textAlign: "center",
     marginRight: 8,
   },
   iconPlaceholder: {
@@ -1206,7 +1217,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   academicStatusToggle: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginLeft: 15,
     marginTop: 5,
   },
@@ -1214,17 +1225,17 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 5,
     marginRight: 10,
   },
   academicStatusOptionSelected: {
-    backgroundColor: '#0A16D6',
-    borderColor: '#0A16D6',
+    backgroundColor: "#0A16D6",
+    borderColor: "#0A16D6",
   },
   academicStatusOptionText: {
     fontSize: 16,
-    color: '#c6c3c3',
+    color: "#c6c3c3",
   },
   pickerContainer: {
     borderBottomWidth: 1,
