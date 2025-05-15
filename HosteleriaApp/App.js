@@ -1,13 +1,18 @@
 import { NavigationContainer } from "@react-navigation/native";
 import LoginScreen from "./Screens/LoginScreen";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomeScreen from "./Components/MainScreen/HomeScreen";
-import RestaurantScreen from "./Components/RestaurantScreen/RestaurantScreen";
-import WorkerScreen from "./Components/WorkerScreen/WorkerScreen";
-import FavRestScreen from "./Components/FavoritesScreen/FavRestScreen";
-import Profile from "./Components/Profile/Profile";
+import HomeScreen from "./components/MainScreen/HomeScreen";
+import RestaurantScreen from "./components/RestaurantScreen/RestaurantScreen";
+import WorkerScreen from "./components/WorkerScreen/WorkerScreen";
+import FavRestScreen from "./components/FavoritesScreen/FavRestScreen";
+import Profile from "./components/Profile/Profile";
 import { AuthProvider } from "./AuthContext";
+<<<<<<< Updated upstream
 import JoviatScreen from "./Components/JoviatScreen/JoviatScreen";
+=======
+import JoviatScreen from "./components/JoviatScreen/JoviatScreen";
+import RegisterScreen from './Screens/RegisterScreen';
+>>>>>>> Stashed changes
 
 const Stack = createStackNavigator();
 

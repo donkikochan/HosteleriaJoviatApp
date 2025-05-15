@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useState } from "react";
 import {
   Text,
@@ -12,6 +13,18 @@ import Navbar from "../Components/Navbar/Navbar";
 import { Ionicons } from "@expo/vector-icons";
 import { auth } from "../Components/FirebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
+=======
+"use client"
+
+import { useState } from "react"
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native"
+import Navbar from "../components/Navbar/Navbar"
+import ProfileBackArrow from "../components/Navbar/ProfileBackArrow"
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons"
+import { auth, db } from "../components/FirebaseConfig"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { doc, getDoc } from "firebase/firestore"
+>>>>>>> Stashed changes
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
